@@ -90,6 +90,30 @@ int main(int argc, char *argv[])
             {
                 parsedFile->busCapacity = atoi(value);
             }
+            if (strcmp(variableName, "boardingTime") == 0)
+            {
+                parsedFile->boardingTime = atoi(value);
+            }
+            if (strcmp(variableName, "requestRate") == 0)
+            {
+                parsedFile->requestRate = atoi(value);
+            }
+            if (strcmp(variableName, "pickupInterval") == 0)
+            {
+                parsedFile->pickupInterval = atoi(value);
+            }
+            if (strcmp(variableName, "maxDelay") == 0)
+            {
+                parsedFile->maxDelay = atoi(value);
+            }
+            if (strcmp(variableName, "noBuses") == 0)
+            {
+                parsedFile->noBuses = atoi(value);
+            }
+            if (strcmp(variableName, "noStops") == 0)
+            {
+                parsedFile->noStops = atoi(value);
+            }
         }
     }
     fclose(file);
