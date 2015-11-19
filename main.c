@@ -3,6 +3,16 @@
 #include <errno.h>
 #include <string.h>
 
+struct ParsedFile {
+    int busCapacity;
+    int boardingTime;
+    float requestRate;
+    float pickupInterval;
+    int maxDelay;
+    int noBuses;
+    int noStops;
+};
+
 void die(const char *message)
 {
     if(errno) {
@@ -16,24 +26,25 @@ void die(const char *message)
 
 int main(int argc, char *argv[])
 {
-    printf("hey");
     // We need to get the input file, which is our first argument
     char *fileName = argv[1];
-    printf("%s", fileName);
-
     FILE* file = fopen(fileName, "r");
-    char line[5];
+    char line[256];
 
     if (file == NULL)
     {
         die("No file found");
     }
 
-    printf("hey");
+    char *variableName;
+    char *value;
+    char *text;
 
-    /* assume line is a char array */
+    // Now let's loop through the contents of the file, line by line
     while (fgets(line, sizeof line, file) != NULL) {
-        printf("hey");
+        variableName = strtok(line, " ");  // e.g busCapacity
+        value = strtok(NULL, " ");         // e.g the value of busCapacity, i.e 12
+        printf("Variable: %s, Value: %s\n", variableName, value);
     }
 
     fclose(file);
