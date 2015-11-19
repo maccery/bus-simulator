@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <string.h>
 
 void die(const char *message)
 {
@@ -15,13 +16,24 @@ void die(const char *message)
 
 int main(int argc, char *argv[])
 {
+    printf("hey");
     // We need to get the input file, which is our first argument
-    char const* const fileName = argv[1];
-    FILE* file = fopen(fileName, "r");
-    char line[256];
+    char *fileName = argv[1];
+    printf("%s", fileName);
 
-    while (fgets(line, sizeof(line), file)) {
-        printf("%s", line);
+    FILE* file = fopen(fileName, "r");
+    char line[5];
+
+    if (file == NULL)
+    {
+        die("No file found");
+    }
+
+    printf("hey");
+
+    /* assume line is a char array */
+    while (fgets(line, sizeof line, file) != NULL) {
+        printf("hey");
     }
 
     fclose(file);
