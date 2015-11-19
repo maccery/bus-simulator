@@ -32,6 +32,6 @@ void ParsedFile_destroy(struct ParsedFile *file);
 void ParsedFile_print(struct ParsedFile *file);
 void ParsedFile_mapPrint(struct ParsedFile *file);
 void printParsedFile(struct ParsedFile *parsedFile);
-void parseFile(FILE *file);
+struct ParsedFile * parseFile(FILE *file);
 
 #endif //CSLP_PARSER_H

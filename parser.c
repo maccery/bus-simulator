@@ -69,7 +69,11 @@ void printParsedFile(struct ParsedFile *parsedFile)
     ParsedFile_destroy(parsedFile);
 }
 
-void parseFile(FILE *file)
+/**
+ * Parses a given file
+ * @return struct ParsedFile
+ */
+struct ParsedFile * parseFile(FILE *file)
 {
     char line[256];
 
@@ -136,5 +140,5 @@ void parseFile(FILE *file)
     }
     fclose(file);
 
-    printParsedFile(parsedFile);
+    return parsedFile;
 }

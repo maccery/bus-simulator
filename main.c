@@ -6,6 +6,8 @@ int main(int argc, char *argv[]) {
     char *fileName = argv[1];
     FILE *file = fopen(fileName, "r");
 
-    parseFile(file);
+    struct ParsedFile *pf = parseFile(file);
+    printParsedFile(pf);
+
     return 0;
 }
