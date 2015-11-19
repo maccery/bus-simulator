@@ -4,6 +4,8 @@
 #include <string.h>
 #include <assert.h>
 
+#define MATRIX_SIZE 6
+
 struct ParsedFile {
     int busCapacity;
     int boardingTime;
@@ -13,7 +15,7 @@ struct ParsedFile {
     int noBuses;
     int noStops;
     int stopTime;
-    int map[6][6]; // Max size of the map is 6x6
+    int map[MATRIX_SIZE][MATRIX_SIZE]; // Max size of the map is 6x6
 };
 
 struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
@@ -48,6 +50,18 @@ void ParsedFile_print(struct ParsedFile *file) {
     printf("\nNo buses: %d", file->noBuses);
     printf("\nNo stops: %d", file->noStops);
     printf("\nStop time: %d", file->stopTime);
+    printf("\n");
+}
+
+void ParsedFile_mapPrint(struct ParsedFile *file) {
+    int i,j;
+
+    for (i = 0; i < MATRIX_SIZE; i++) {
+        for (j = 0; j < MATRIX_SIZE; j++) {
+            printf("%d ", file->map[i][j]);
+        }
+        printf("\n");
+    }
 }
 
 void die(const char *message) {
@@ -77,7 +91,7 @@ int main(int argc, char *argv[]) {
     struct ParsedFile *parsedFile = ParsedFile_create(0, 0, 0.0, 0.0, 0, 0, 0, 0);
 
     // Now let's loop through the contents of the file, line by line
-    int lineNumber = 0;
+    int lineNumber = -1;
     while (fgets(line, sizeof line, file) != NULL) {
         variableName = strtok(line, " ");  // e.g busCapacity
         value = strtok(NULL, " ");         // e.g the value of busCapacity, i.e 12
@@ -107,20 +121,18 @@ int main(int argc, char *argv[]) {
             else if (strcmp(variableName, "stopTime") == 0) {
                 parsedFile->stopTime = atoi(value);
             }
-            else if (lineNumber > 0 || strcmp(variableName, "map\n") == 0) {
-                if (lineNumber > 0) {
+            else if (lineNumber > -1 || strcmp(variableName, "map\n") == 0) {
 
-                    // We're parsing the map now so we know the next lines will be part of our map matrix
+                // Essentially says to skip this if we're just on the 'map' definition line
+                if (lineNumber > -1) {
+                    // We've already got the first two values, so we'll store them
+                    parsedFile->map[lineNumber][0] = atoi(variableName);
+                    parsedFile->map[lineNumber][1] = atoi(value);
+
                     int charNumber = 2;
-                    int matrixValue = 0;
-
-                    // convert the value of the token we've got into an integer
-                    parsedFile->map[lineNumber-1][0] = atoi(variableName);
-                    parsedFile->map[lineNumber-1][1] = atoi(value);
-
                     for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " "))
                     {
-                        parsedFile->map[lineNumber-1][charNumber] = atoi(p);
+                        parsedFile->map[lineNumber][charNumber] = atoi(p);
                         charNumber++;
                     }
                 }
@@ -131,6 +143,7 @@ int main(int argc, char *argv[]) {
     fclose(file);
 
     ParsedFile_print(parsedFile);
+    ParsedFile_mapPrint(parsedFile);
     ParsedFile_destroy(parsedFile);
 
     return 0;
