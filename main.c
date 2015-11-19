@@ -4,7 +4,8 @@
 #include <string.h>
 #include <assert.h>
 
-#define MATRIX_SIZE 6
+#define MATRIX_WIDTH 12
+#define MATRIX_HEIGHT 8
 
 struct ParsedFile {
     int busCapacity;
@@ -15,7 +16,7 @@ struct ParsedFile {
     int noBuses;
     int noStops;
     int stopTime;
-    int map[MATRIX_SIZE][MATRIX_SIZE]; // Max size of the map is 6x6
+    int map[MATRIX_HEIGHT][MATRIX_WIDTH]; // Max size of the map is 6x6
 };
 
 struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
@@ -56,8 +57,8 @@ void ParsedFile_print(struct ParsedFile *file) {
 void ParsedFile_mapPrint(struct ParsedFile *file) {
     int i,j;
 
-    for (i = 0; i < MATRIX_SIZE; i++) {
-        for (j = 0; j < MATRIX_SIZE; j++) {
+    for (i = 0; i < MATRIX_HEIGHT; i++) {
+        for (j = 0; j < MATRIX_WIDTH; j++) {
             printf("%d ", file->map[i][j]);
         }
         printf("\n");
@@ -74,10 +75,15 @@ void die(const char *message) {
     exit(1);
 }
 
-int main(int argc, char *argv[]) {
-    // We need to get the input file, which is our first argument
-    char *fileName = argv[1];
-    FILE *file = fopen(fileName, "r");
+void printParsedFile(struct ParsedFile *parsedFile)
+{
+    ParsedFile_print(parsedFile);
+    ParsedFile_mapPrint(parsedFile);
+    ParsedFile_destroy(parsedFile);
+}
+
+void parseFile(FILE *file)
+{
     char line[256];
 
     if (file == NULL) {
@@ -95,6 +101,7 @@ int main(int argc, char *argv[]) {
     while (fgets(line, sizeof line, file) != NULL) {
         variableName = strtok(line, " ");  // e.g busCapacity
         value = strtok(NULL, " ");         // e.g the value of busCapacity, i.e 12
+
 
         if (variableName != NULL) {
             if (strcmp(variableName, "busCapacity") == 0) {
@@ -142,9 +149,15 @@ int main(int argc, char *argv[]) {
     }
     fclose(file);
 
-    ParsedFile_print(parsedFile);
-    ParsedFile_mapPrint(parsedFile);
-    ParsedFile_destroy(parsedFile);
+    printParsedFile(parsedFile);
+}
+
+int main(int argc, char *argv[]) {
+    // We need to get the input file, which is our first argument
+    char *fileName = argv[1];
+    FILE *file = fopen(fileName, "r");
+
+    parseFile(file);
 
     return 0;
 }
