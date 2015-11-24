@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
     for (int time = 0; time <= pf->stopTime; time++)
     {
         struct Request* request = Request_random(MATRIX_HEIGHT);
+        Request_print(request);
         Request_destroy(request);
     }
 }

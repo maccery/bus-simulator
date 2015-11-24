@@ -18,6 +18,7 @@ struct Request {
 
 struct Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime);
 void Request_destroy(struct Request *request);
+void Request_print(struct Request *request);
 struct Request* Request_random(int numberOfBusStops);
 
 #endif //CSLP_REQUEST_H

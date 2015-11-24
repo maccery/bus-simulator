@@ -27,7 +27,17 @@ void Request_destroy(struct Request *request) {
 }
 
 /**
+ * Simply prints out the details of a request
+ */
+void Request_print(struct Request *request) {
+    printf(" -> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
+}
+
+
+/**
  * Generates a random request
+ * @param numberOfBusStops
+ * @return struct Request*
  */
 struct Request* Request_random(int numberOfBusStops) {
 
