@@ -12,7 +12,7 @@
 #include <assert.h>
 
 #define MATRIX_WIDTH 12
-#define MATRIX_HEIGHT 8
+#define MATRIX_HEIGHT 12
 
 struct ParsedFile {
     int busCapacity;
