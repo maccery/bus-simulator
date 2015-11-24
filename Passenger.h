@@ -18,7 +18,7 @@ struct Passenger {
     struct Request request;
 };
 
-struct Passenger *Passenger_create(struct Minibus currentBus, struct Request request);
+struct Passenger *Passenger_create();
 void Passenger_destroy(struct Passenger *passenger);
 void Passenger_disembark(struct Passenger *passenger, struct Minibus *minibus);
 void Passenger_embark(struct Passenger *passenger, struct Minibus *minibus);
