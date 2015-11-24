@@ -5,9 +5,6 @@
 #include "minibus.h"
 #include "passenger.h"
 
-/**
- * Creates a request struct
- */
 struct Minibus *Minibus_create(int currentStop, int occupancy, int capacity, int boardingTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
     struct Minibus *minibus = malloc(sizeof(struct Minibus));
