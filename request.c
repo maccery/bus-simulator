@@ -34,7 +34,6 @@ void Request_print(struct Request *request) {
     printf("<%d> -> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->requestTime, request->startStop, request->destinationStop, request->desiredBoardingTime);
 }
 
-
 /**
  * Generates a random request
  * @param numberOfBusStops

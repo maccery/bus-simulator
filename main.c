@@ -12,9 +12,10 @@ int main(int argc, char *argv[]) {
     ParsedFile_print(pf);
 
     // Our simulation algorithm, boom
-    for (int time = 0; time <= pf->stopTime; time++)
+    for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
-        struct Request* request = Request_random(time, pf->noStops);
+        // Generate a random request and print it
+        struct Request* request = Request_random(currentTime, pf->noStops);
         Request_print(request);
         Request_destroy(request);
     }
