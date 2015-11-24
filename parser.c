@@ -115,6 +115,10 @@ struct ParsedFile * parseFile(FILE *file)
             }
             else if (strcmp(variableName, "noStops") == 0) {
                 parsedFile->noStops = atoi(value);
+                if (parsedFile->noStops > MATRIX_HEIGHT)
+                {
+                    die("The number of bus stops can't be greater than the MATRIX_HEIGHT");
+                }
             }
             else if (strcmp(variableName, "stopTime") == 0) {
                 parsedFile->stopTime = atoi(value);
@@ -133,10 +137,19 @@ struct ParsedFile * parseFile(FILE *file)
                         parsedFile->map[lineNumber][charNumber] = atoi(p);
                         charNumber++;
                     }
+
+                    if (charNumber != parsedFile->noStops)
+                    {
+                        die("The matrix map doesn't match the number of stops");
+                    }
                 }
                 lineNumber++;
             }
         }
+    }
+    if (lineNumber != parsedFile->noStops)
+    {
+        die("The matrix map doesn't match the number of stops");
     }
     fclose(file);
 
