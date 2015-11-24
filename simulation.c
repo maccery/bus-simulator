@@ -7,6 +7,7 @@
 void Simulation_start(struct ParsedFile *pf)
 {
     struct Minibus * minibuses = createMinibuses(pf);
+    Minibus_print(&minibuses[4]);
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
@@ -23,6 +24,7 @@ void Simulation_start(struct ParsedFile *pf)
             Request_print(request);
         }
     }
+
 }
 
 struct Minibus * createMinibuses(struct ParsedFile *pf)

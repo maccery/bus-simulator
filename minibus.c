@@ -22,3 +22,7 @@ void Minibus_destroy(struct Minibus *minibus) {
     assert(minibus != NULL);
     free(minibus);
 }
+
+void Minibus_print(struct Minibus *minibus) {
+    printf("MINIBUS PRINT. Bus capacity: %d\n", minibus->capacity);
+}
