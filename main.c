@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     // Our simulation algorithm, boom
     for (int time = 0; time <= pf->stopTime; time++)
     {
-        struct Request* request = Request_random(pf->noStops);
+        struct Request* request = Request_random(time, pf->noStops);
         Request_print(request);
         Request_destroy(request);
     }
