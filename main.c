@@ -16,16 +16,24 @@ int main(int argc, char *argv[]) {
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
-        // Generate a random request and print it
-        struct Request* request = Request_random(currentTime, pf->noStops);
-        Request_print(request);
-        struct Minibus* minibus = Minibus_create(3, 20, 20, 1);
+        // Convert request rate in seconds
+        int requestRate = (int) pf->requestRate*60;
+
+        // We only want to create a request with the request rate....
+        if (currentTime % requestRate == 0)
+        {
+            // Make a new request
+            struct Request* request = Request_random(currentTime, pf->noStops);
+            Request_print(request);
+            Request_destroy(request);
+        }
+
+        // Create our buses; 0 capacity, and at the bus garage
+        struct Minibus* minibus = Minibus_create(0, 0, pf->busCapacity, pf->boardingTime);
 
         struct Passenger* passenger = Passenger_create();
-        
         Passenger_embark(passenger, minibus);
 
         Minibus_destroy(minibus);
-        Request_destroy(request);
     }
 }
