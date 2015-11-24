@@ -23,16 +23,14 @@ int main(int argc, char *argv[]) {
         if (currentTime % requestRate == 0)
         {
             // Make a new request
-            struct Request* request = Request_random(currentTime, pf->noStops);
+            struct Passenger* passenger = Passenger_create();
+            struct Request* request = Passenger_make_request(passenger, pf->noStops);
             Request_print(request);
             Request_destroy(request);
         }
 
         // Create our buses; 0 capacity, and at the bus garage
         struct Minibus* minibus = Minibus_create(0, 0, pf->busCapacity, pf->boardingTime);
-
-        struct Passenger* passenger = Passenger_create();
-        Passenger_embark(passenger, minibus);
 
         Minibus_destroy(minibus);
     }

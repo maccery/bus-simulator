@@ -12,13 +12,19 @@ struct Passenger *Passenger_create() {
 }
 
 void Passenger_print(struct Passenger *passenger) {
-    printf("-> Passenger is on the bus %d, going from stop %d to stop %d", passenger->currentBus.id, passenger->request.startStop, passenger->request.destinationStop);
     printf("\n");
 }
 
 void Passenger_destroy(struct Passenger *passenger) {
     assert(passenger != NULL);
     free(passenger);
+}
+
+struct Request* Passenger_make_request(struct Passenger *passenger, int noStops) {
+    struct Request* request = Request_random(noStops);
+    passenger->request = request;
+
+    return request;
 }
 
 void Passenger_disembark(struct Passenger *passenger, struct Minibus *minibus) {

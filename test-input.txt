@@ -1,7 +1,7 @@
 # Basic input script with valid input
 busCapacity 12
 boardingTime 10
-requestRate 30.0
+requestRate 3.0
 pickupInterval 30.0
 maxDelay 15
 noStops 6

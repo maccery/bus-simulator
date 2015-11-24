@@ -6,12 +6,11 @@
 /**
  * Creates a request struct
  */
-struct Request *Request_create(int requestTime, int startStop, int destinationStop, int desiredBoardingTime) {
+struct Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
     struct Request *request = malloc(sizeof(struct Request));
     assert(request != NULL);
 
-    request->requestTime = requestTime;
     request->startStop = startStop;
     request->destinationStop = destinationStop;
     request->desiredBoardingTime = desiredBoardingTime;
@@ -31,7 +30,7 @@ void Request_destroy(struct Request *request) {
  * Simply prints out the details of a request
  */
 void Request_print(struct Request *request) {
-    printf("<%d> -> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->requestTime, request->startStop, request->destinationStop, request->desiredBoardingTime);
+    printf("-> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
 }
 
 /**
@@ -39,7 +38,7 @@ void Request_print(struct Request *request) {
  * @param numberOfBusStops
  * @return struct Request*
  */
-struct Request* Request_random(int requestTime, int numberOfBusStops) {
+struct Request* Request_random(int numberOfBusStops) {
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
     int startStop = rand() % numberOfBusStops+1;
@@ -48,5 +47,5 @@ struct Request* Request_random(int requestTime, int numberOfBusStops) {
     // Generates a random boarding time
     int desiredBoardingTime = 0000;
 
-    return Request_create(requestTime, startStop, destinationStop, desiredBoardingTime);
+    return Request_create(startStop, destinationStop, desiredBoardingTime);
 }

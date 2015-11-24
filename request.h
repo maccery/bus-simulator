@@ -11,15 +11,14 @@
 #ifndef CSLP_REQUEST_H
 #define CSLP_REQUEST_H
 struct Request {
-    int requestTime;
     int startStop;
     int destinationStop;
     int desiredBoardingTime;
 };
 
-struct Request *Request_create(int requestTime, int startStop, int destinationStop, int desiredBoardingTime);
+struct Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime);
 void Request_destroy(struct Request *request);
 void Request_print(struct Request *request);
-struct Request* Request_random(int requestTime, int numberOfBusStops);
+struct Request* Request_random(int numberOfBusStops);
 
 #endif //CSLP_REQUEST_H

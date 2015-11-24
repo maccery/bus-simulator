@@ -15,10 +15,11 @@
 
 struct Passenger {
     struct Minibus currentBus;
-    struct Request request;
+    struct Request *request;
 };
 
 struct Passenger *Passenger_create();
+struct Request* Passenger_make_request(struct Passenger *passenger, int noStops);
 void Passenger_destroy(struct Passenger *passenger);
 void Passenger_disembark(struct Passenger *passenger, struct Minibus *minibus);
 void Passenger_embark(struct Passenger *passenger, struct Minibus *minibus);
