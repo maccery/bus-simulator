@@ -22,8 +22,12 @@ void Simulation_start(struct ParsedFile *pf)
             struct Passenger* passenger = Passenger_create();
             struct Request* request = Passenger_make_request(passenger, pf->noStops);
             Request_print(request);
+            //Request_destroy(request);
+            //Passenger_destroy(passenger);
         }
     }
+
+    // Free up the memory
 
 }
 

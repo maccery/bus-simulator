@@ -11,4 +11,5 @@ int main(int argc, char *argv[]) {
 
     ParsedFile_print(pf);
     Simulation_start(pf);
+    //ParsedFile_destroy(pf);
 }
