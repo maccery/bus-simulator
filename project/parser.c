@@ -41,7 +41,8 @@ void ParsedFile_print(struct ParsedFile *file) {
     printf("\n");
 }
 
-void ParsedFile_mapPrint(struct ParsedFile *file) {
+void ParsedFile_mapPrint(struct ParsedFile *file)
+{
     int i,j;
 
     for (i = 0; i < MATRIX_HEIGHT; i++) {
