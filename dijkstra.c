@@ -76,26 +76,26 @@ void BellmanFord(struct Graph* graph, int src)
 }
 
 // Driver program to test above functions
-int makeDis(int map[12][12] , int source)
+int makeDis(int map[12][12] , int edgeCount, int source)
 {
-    struct Graph* g = createGraph(5, 15);
+    struct Graph* g = createGraph(6, edgeCount);
     int counter = 0;
-    for (int rows = 0; rows <= 5; rows++)
+    for (int rows = 0; rows <= 6; rows++)
     {
-        for (int columns = 0; columns <= 5; columns++)
+        for (int columns = 0; columns <= 6; columns++)
         {
             if (map[rows][columns] != -1)
             {
 
-            g->edge[counter].src = rows;
-            g->edge[counter].dest = columns;
-            g->edge[counter].weight = map[rows][columns];
+                g->edge[counter].src = rows;
+                g->edge[counter].dest = columns;
+                g->edge[counter].weight = map[rows][columns];
 
-            counter++;
+                counter++;
             }
         }
     }
-    BellmanFord(g, 0);
+    BellmanFord(g, source);
 
     return 0;
 }

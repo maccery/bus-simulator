@@ -137,12 +137,25 @@ struct ParsedFile * parseFile(FILE *file)
                         parsedFile->map[lineNumber][0] = atoi(variableName);
                         parsedFile->map[lineNumber][1] = atoi(value);
 
+
+                    if (atoi(variableName) != -1)
+                    {
+                        parsedFile->edgeCount++;
+                    }
+
+                    if (atoi(value) != -1)
+                    {
+                        parsedFile->edgeCount++;
+                    }
+
                         int charNumber = 2; //  also same as the edgenumber
                     for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " "))
                     {
                         parsedFile->map[lineNumber][charNumber] = atoi(p);
-
-
+                        if (atoi(p) != -1)
+                        {
+                            parsedFile->edgeCount++;
+                        }
                         charNumber++;
                     }
 

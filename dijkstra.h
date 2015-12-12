@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include "parser.h"
 
 // a structure to represent a weighted edge in graph
 struct Edge
@@ -28,6 +29,6 @@ struct Graph
 };
 
 struct Graph* createGraph(int V, int E);
-int makeDis(int map[12][12] , int source);
+int makeDis(int map[12][12] , int edgeCount, int source);
 
 #endif //CSLP_DIJKSTRA_H
