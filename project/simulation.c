@@ -12,6 +12,16 @@
  * - boarding of a new passenger
  */
 
+/*
+ * Given a starting stop and ending stop, calculate the shortest path for this, return the distance
+ *
+ * Should: update the request with its path
+ */
+int Calculate_path(int startStop, int endStop)
+{
+
+}
+
 void Simulation_start(struct ParsedFile *pf)
 {
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
@@ -37,6 +47,11 @@ void Simulation_start(struct ParsedFile *pf)
             struct Passenger* passenger = Passenger_create();
             struct Request* request = Passenger_make_request(passenger, pf->noStops);
             Request_print(request);
+
+            // Now we need to do something with this request...
+            // Calculate the path from A to B (shortest path)
+
+
             //Request_destroy(request);
             //Passenger_destroy(passenger);
         }

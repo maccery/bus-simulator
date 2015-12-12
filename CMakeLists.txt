@@ -12,7 +12,7 @@ add_subdirectory(tests)
 target_link_libraries(project_run project)
 =======
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(SOURCE_FILES main.c parser.h parser.c passenger.c passenger.h minibus.c minibus.h request.c request.h simulation.c simulation.h)
+set(SOURCE_FILES main.c parser.h parser.c passenger.c passenger.h minibus.c minibus.h request.c request.h simulation.c simulation.h dijkstra.c dijkstra.h dijkstra.c dijkstra.h)
 add_executable(cslp ${SOURCE_FILES})
 
 add_subdirectory(tests)

@@ -6,6 +6,7 @@
 #include <assert.h>
 
 
+
 struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses, int noStops, int stopTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
