@@ -98,6 +98,10 @@ struct ParsedFile * parseFile(FILE *file)
         if (variableName != NULL) {
             if (strcmp(variableName, "busCapacity") == 0) {
                 parsedFile->busCapacity = atoi(value);
+                if (parsedFile->busCapacity > 24)
+                {
+                    die("The bus capacity can't be greater than 24 seats");
+                }
             }
             else if (strcmp(variableName, "boardingTime") == 0) {
                 parsedFile->boardingTime = atoi(value);

@@ -4,10 +4,25 @@
 
 #include "simulation.h"
 
+/*
+ * Possible events:
+ * - new passenger request
+ * - arrival at a bus stop
+ * - disembarkation of a passenger
+ * - boarding of a new passenger
+ */
+
 void Simulation_start(struct ParsedFile *pf)
 {
+    // There's a fixed amount of minibuses in the system, let's make these first and store in array
     struct Minibus * minibuses = createMinibuses(pf);
+
+    // Print our minibuses
     Minibus_print(&minibuses[4]);
+    Minibus_print(&minibuses[3]);
+    Minibus_print(&minibuses[2]);
+    Minibus_print(&minibuses[1]);
+    Minibus_print(&minibuses[0]);
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
@@ -15,10 +30,10 @@ void Simulation_start(struct ParsedFile *pf)
         // Convert request rate in seconds
         int requestRate = (int) pf->requestRate*60;
 
-        // We only want to create a request with the request rate....
+        // We only want to create a request with the request rate...
         if (currentTime % requestRate == 0)
         {
-            // Make a new request
+            // Make a new (random) request
             struct Passenger* passenger = Passenger_create();
             struct Request* request = Passenger_make_request(passenger, pf->noStops);
             Request_print(request);
