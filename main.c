@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "parser.h"
 #include "simulation.h"
-#include "dijkstra.h"
 
 int main(int argc, char *argv[]) {
     // We need to get the input file, which is our first argument
@@ -10,9 +9,8 @@ int main(int argc, char *argv[]) {
 
     struct ParsedFile *pf = parseFile(file);
 
-    //ParsedFile_print(pf);
-    //Simulation_start(pf);
+    ParsedFile_print(pf);
+    Simulation_start(pf);
     //ParsedFile_destroy(pf);
 
-    makeDis(pf->map, pf->edgeCount, 0);
 }

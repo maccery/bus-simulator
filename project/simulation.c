@@ -3,6 +3,7 @@
 //
 
 #include "simulation.h"
+#include "dijkstra.h"
 
 /*
  * Possible events:
@@ -49,8 +50,9 @@ void Simulation_start(struct ParsedFile *pf)
             Request_print(request);
 
             // Now we need to do something with this request...
-            // Calculate the path from A to B (shortest path)
-
+            // This will calculate the SHORTEST time (in minutes) for a bus to get here...
+            int h = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
+            printf("-> It's gonna take %d minutes from stop %d to stop %d\n", h, request->startStop, request->destinationStop);
 
             //Request_destroy(request);
             //Passenger_destroy(passenger);

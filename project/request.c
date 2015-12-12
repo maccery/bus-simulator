@@ -41,8 +41,8 @@ void Request_print(struct Request *request) {
 struct Request* Request_random(int numberOfBusStops) {
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
-    int startStop = rand() % numberOfBusStops+1;
-    int destinationStop = rand() % numberOfBusStops+1;
+    int startStop = (rand() % numberOfBusStops+1)-1;
+    int destinationStop = (rand() % numberOfBusStops+1)-1;
 
     // Generates a random boarding time
     int desiredBoardingTime = 0000;

@@ -30,7 +30,7 @@ void printArr(int dist[], int n)
 // The main function that finds shortest distances from src to
 // all other vertices using Bellman-Ford algorithm.  The function
 // also detects negative weight cycle
-void BellmanFord(struct Graph* graph, int src)
+int BellmanFord(struct Graph* graph, int src, int destination)
 {
     int V = graph->V;
     int E = graph->E;
@@ -70,13 +70,13 @@ void BellmanFord(struct Graph* graph, int src)
             printf("Graph contains negative weight cycle");
     }
 
-    printArr(dist, V);
-
-    return;
+    return dist[destination];
 }
 
-// Driver program to test above functions
-int makeDis(int map[12][12] , int edgeCount, int source)
+/**
+ * Given a start and destination, will calculate the shortest time between these...
+ */
+int makeDis(int map[12][12] , int edgeCount, int source, int destination)
 {
     struct Graph* g = createGraph(6, edgeCount);
     int counter = 0;
@@ -95,7 +95,5 @@ int makeDis(int map[12][12] , int edgeCount, int source)
             }
         }
     }
-    BellmanFord(g, source);
-
-    return 0;
+    return BellmanFord(g, source, destination);
 }
