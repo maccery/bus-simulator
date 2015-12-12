@@ -14,5 +14,5 @@ int main(int argc, char *argv[]) {
     //Simulation_start(pf);
     //ParsedFile_destroy(pf);
 
-    makeDis(pf->graph, 4);
+    makeDis(pf->map, 4);
 }

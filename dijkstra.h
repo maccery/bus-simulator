@@ -28,6 +28,6 @@ struct Graph
 };
 
 struct Graph* createGraph(int V, int E);
-int makeDis(struct Graph* graph, int source);
+int makeDis(int map[12][12] , int source);
 
 #endif //CSLP_DIJKSTRA_H
