@@ -13,14 +13,38 @@
  * - boarding of a new passenger
  */
 
-/*
- * Given a starting stop and ending stop, calculate the shortest path for this, return the distance
- *
- * Should: update the request with its path
- */
-int Calculate_path(int startStop, int endStop)
-{
 
+void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* request, int currentTime)
+{
+    // Really large shortest journey time to start with
+    int shortestJourneyTime = 50000000;
+    struct Minibus* quickestBus;
+
+    // loop through minibuses to find the best one for our user
+    for (int i = 0; i <= pf->noBuses; i ++)
+    {
+        // Calculate the time for this minibus to get to that person
+        struct Minibus* minibus = &minibuses[i];
+        int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
+
+        // If it's not the shortest, ignore it
+        if (journeyTime <= shortestJourneyTime)
+        {
+            quickestBus = minibus;
+        }
+    }
+
+    // If the quickest time for the bus to get there, plus the travel time to destination is too late, we say so...
+    int travelTime = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
+    if (shortestJourneyTime + currentTime <= request->desiredBoardingTime)
+    {
+        printf("request cannot be accommodated\n");
+    }
+    else
+    {
+        printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
+        // it's on its way, we need to schedule this
+    }
 }
 
 void Simulation_start(struct ParsedFile *pf)
@@ -51,8 +75,7 @@ void Simulation_start(struct ParsedFile *pf)
 
             // Now we need to do something with this request...
             // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-            int h = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
-            printf("-> It's gonna take %d minutes from stop %d to stop %d\n", h, request->startStop, request->destinationStop);
+            findBus(pf, minibuses, request, currentTime);
 
             //Request_destroy(request);
             //Passenger_destroy(passenger);
