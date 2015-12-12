@@ -4,8 +4,7 @@
 
 #include "parser.h"
 #include <assert.h>
-
-
+#include "dijkstra.h"
 
 struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses, int noStops, int stopTime) {
@@ -133,14 +132,34 @@ struct ParsedFile * parseFile(FILE *file)
 
                 // Essentially says to skip this if we're just on the 'map' definition line
                 if (lineNumber > -1) {
-                    // We've already got the first two values, so we'll store them
-                    parsedFile->map[lineNumber][0] = atoi(variableName);
-                    parsedFile->map[lineNumber][1] = atoi(value);
+                        parsedFile->graph = createGraph(12, 12);
 
-                    int charNumber = 2;
+                        // We've already got the first two values, so we'll store them
+                        parsedFile->map[lineNumber][0] = atoi(variableName);
+                        parsedFile->map[lineNumber][1] = atoi(value);
+
+                        // create graph edges
+                        if (atoi(variableName) != -1) {
+                            parsedFile->graph->edge[0].src = lineNumber;
+                            parsedFile->graph->edge[0].dest = 0;
+                            parsedFile->graph->edge[0].weight = atoi(variableName);
+                        }
+                        if (atoi(value) != -1) {
+                            parsedFile->graph->edge[1].src = lineNumber;
+                            parsedFile->graph->edge[1].dest = 1;
+                            parsedFile->graph->edge[1].weight = atoi(value);
+                        }
+                        int charNumber = 2; //  also same as the edgenumber
                     for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " "))
                     {
                         parsedFile->map[lineNumber][charNumber] = atoi(p);
+
+                        // create graph edge
+                        if (atoi(p) != -1) {
+                            parsedFile->graph->edge[charNumber].src = lineNumber;
+                            parsedFile->graph->edge[charNumber].dest = charNumber;
+                            parsedFile->graph->edge[charNumber].weight = atoi(p);
+                        }
                         charNumber++;
                     }
 

@@ -10,6 +10,24 @@
 #include <string.h>
 #include <limits.h>
 
-int makeDis(int graph[12][12], int source);
+// a structure to represent a weighted edge in graph
+struct Edge
+{
+    int src, dest, weight;
+};
+
+// a structure to represent a connected, directed and
+// weighted graph
+struct Graph
+{
+    // V-> Number of vertices, E-> Number of edges
+    int V, E;
+
+    // graph is represented as an array of edges.
+    struct Edge* edge;
+};
+
+struct Graph* createGraph(int V, int E);
+int makeDis(struct Graph* graph, int source);
 
 #endif //CSLP_DIJKSTRA_H

@@ -24,6 +24,7 @@ struct ParsedFile {
     int noStops;
     int stopTime;
     int map[MATRIX_HEIGHT][MATRIX_WIDTH]; // Max size of the map is 6x6
+    struct Graph* graph;
 };
 
 struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
