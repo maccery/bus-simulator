@@ -14,7 +14,7 @@ typedef struct Event {
     void *data;
 } Event;
 
-Event *createEvent(int executionTime, int (callbackFunction)(void*));
+Event *createEvent(int executionTime, int (*callbackFunction)(void*), void *data);
 
 typedef struct EventQueue
 {

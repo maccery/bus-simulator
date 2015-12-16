@@ -7,14 +7,12 @@
 
 // creates an event
 
-Event *createEvent(int executionTime, int (*callbackFunction)(void*))
+Event *createEvent(int executionTime, int (*callbackFunction)(void*), void* data)
 {
-    int hey = 50;
-    void *pointer = &hey;
     Event *event = malloc(sizeof(Event));
     event->executionTime = executionTime;
     event->callbackFunction = callbackFunction;
-    event->data = (void*) hey;
+    event->data = data;
 
     return event;
 }
