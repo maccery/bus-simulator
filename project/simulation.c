@@ -8,11 +8,21 @@
 #include <time.h>
 
 typedef struct Event {
-    int (*callbackFunction)(void); // This is the callback function
+    int executionTime; // the time at which this event occurs
+    int (*callbackFunction)(void); // this is the callback function
 } Event;
 
+Event *createEvent(int executionTime, int (*callbackFunction)(void))
+{
+    Event *event = malloc(sizeof(Event));
+    event->executionTime = executionTime;
+    event->callbackFunction = callbackFunction;
+
+    return event;
+}
+
 int doShit() {
-return 5;
+    return 5;
 }
 
 /*
@@ -53,8 +63,9 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
         printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
         //delay(5000);
 
-        // We need to make a new event, with a callback function
-
+        // We need to make a new event at the future time, with a callback function
+        int executionTime = shortestJourneyTime + currentTime;
+        createEvent(executionTime, doShit);
     }
 }
 
@@ -69,13 +80,6 @@ void Simulation_start(ParsedFile *pf)
     Minibus_print(&minibuses[2]);
     Minibus_print(&minibuses[1]);
     Minibus_print(&minibuses[0]);
-
-    // Create an event
-    Event *event = malloc(sizeof(Event));
-    event->callbackFunction = doShit;
-
-    // call an event's callback
-    int hey = event->callbackFunction();
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
