@@ -34,7 +34,7 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
 
     // Really large shortest journey time to start with
     int shortestJourneyTime = 50000000;
-    Minibus* quickestBus;
+    Minibus* quickestBus = NULL;
 
     // loop through minibuses to find the best one for our user
     for (int i = 0; i <= pf->noBuses; i ++)
@@ -42,7 +42,7 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
-        if (minibus->occupancy+1 <= pf->busCapacity)
+        if (minibus->occupancy < 1)
         {
             int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
 
@@ -54,9 +54,11 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
         }
     }
 
+
     // If the quickest time for the bus to get there, plus the travel time to destination is too late, we say so...
     int travelTime = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
-    if (shortestJourneyTime + currentTime <= request->desiredBoardingTime)
+    // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
+    if (!quickestBus || shortestJourneyTime + currentTime <= request->desiredBoardingTime)
     {
         printf("request cannot be accommodated\n");
     }
@@ -67,10 +69,7 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
 
         // We need to make a new event at the future time, with a callback function
         int executionTime = travelTime + currentTime;
-        if (quickestBus)
-        {
-            request->minibus = quickestBus;
-        }
+        request->minibus = quickestBus;
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event);
     }
