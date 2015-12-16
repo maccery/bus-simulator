@@ -6,10 +6,10 @@
 #include <assert.h>
 #include "dijkstra.h"
 
-struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
+ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses, int noStops, int stopTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
-    struct ParsedFile *file = malloc(sizeof(struct ParsedFile));
+    ParsedFile *file = malloc(sizeof(ParsedFile));
     assert(file != NULL);
 
     file->busCapacity = busCapacity;
@@ -24,12 +24,12 @@ struct ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float re
     return file;
 }
 
-void ParsedFile_destroy(struct ParsedFile *file) {
+void ParsedFile_destroy(ParsedFile *file) {
     assert(file != NULL);
     free(file);
 }
 
-void ParsedFile_print(struct ParsedFile *file) {
+void ParsedFile_print(ParsedFile *file) {
     printf("Bus capacity: %d", file->busCapacity);
     printf("\nBoarding time: %d", file->boardingTime);
     printf("\nRequest rate: %f", file->requestRate);
@@ -41,7 +41,7 @@ void ParsedFile_print(struct ParsedFile *file) {
     printf("\n");
 }
 
-void ParsedFile_mapPrint(struct ParsedFile *file)
+void ParsedFile_mapPrint(ParsedFile *file)
 {
     int i,j;
 
@@ -63,7 +63,7 @@ void die(const char *message) {
     exit(1);
 }
 
-void printParsedFile(struct ParsedFile *parsedFile)
+void printParsedFile(ParsedFile *parsedFile)
 {
     ParsedFile_print(parsedFile);
     ParsedFile_mapPrint(parsedFile);
@@ -72,9 +72,9 @@ void printParsedFile(struct ParsedFile *parsedFile)
 
 /**
  * Parses a given file
- * @return struct ParsedFile
+ * @return ParsedFile
  */
-struct ParsedFile * parseFile(FILE *file)
+ParsedFile * parseFile(FILE *file)
 {
     char line[256];
 
@@ -86,7 +86,7 @@ struct ParsedFile * parseFile(FILE *file)
     char *value;
 
     // create an empty struct to store the parsed data
-    struct ParsedFile *parsedFile = ParsedFile_create(0, 0, 0.0, 0.0, 0, 0, 0, 0);
+    ParsedFile *parsedFile = ParsedFile_create(0, 0, 0.0, 0.0, 0, 0, 0, 0);
 
     // Now let's loop through the contents of the file, line by line
     int lineNumber = -1;

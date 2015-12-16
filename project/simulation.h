@@ -9,10 +9,10 @@
 #include "request.h"
 #include "passenger.h"
 
-struct Simulation {
-};
+typedef struct Simulation {
+} Simulation;
 
-void Simulation_start(struct ParsedFile *pf);
-struct Minibus * createMinibuses(struct ParsedFile *pf);
+void Simulation_start(ParsedFile *pf);
+Minibus * createMinibuses(ParsedFile *pf);
 
 #endif //CSLP_SIMULATION_H

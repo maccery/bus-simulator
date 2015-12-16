@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
     char *fileName = argv[1];
     FILE *file = fopen(fileName, "r");
 
-    struct ParsedFile *pf = parseFile(file);
+    ParsedFile *pf = parseFile(file);
 
     ParsedFile_print(pf);
     Simulation_start(pf);

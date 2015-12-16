@@ -5,9 +5,9 @@
 #include "minibus.h"
 #include "passenger.h"
 
-struct Minibus *Minibus_create(int currentStop, int occupancy, int capacity, int boardingTime) {
+Minibus *Minibus_create(int currentStop, int occupancy, int capacity, int boardingTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
-    struct Minibus *minibus = malloc(sizeof(struct Minibus));
+    Minibus *minibus = malloc(sizeof(Minibus));
     assert(minibus != NULL);
 
     minibus->currentStop = currentStop;
@@ -18,11 +18,11 @@ struct Minibus *Minibus_create(int currentStop, int occupancy, int capacity, int
     return minibus;
 }
 
-void Minibus_destroy(struct Minibus *minibus) {
+void Minibus_destroy(Minibus *minibus) {
     assert(minibus != NULL);
     free(minibus);
 }
 
-void Minibus_print(struct Minibus *minibus) {
+void Minibus_print(Minibus *minibus) {
     printf("MINIBUS PRINT. Bus capacity: %d\n", minibus->capacity);
 }

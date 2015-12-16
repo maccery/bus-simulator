@@ -13,15 +13,15 @@
 #include "minibus.h"
 #include "request.h"
 
-struct Passenger {
+typedef struct Passenger {
     struct Minibus currentBus;
     struct Request *request;
-};
+} Passenger;
 
-struct Passenger *Passenger_create();
-struct Request* Passenger_make_request(struct Passenger *passenger, int noStops);
-void Passenger_destroy(struct Passenger *passenger);
-void Passenger_disembark(struct Passenger *passenger, struct Minibus *minibus);
-void Passenger_embark(struct Passenger *passenger, struct Minibus *minibus);
+Passenger *Passenger_create();
+struct Request* Passenger_make_request(Passenger *passenger, int noStops);
+void Passenger_destroy(Passenger *passenger);
+void Passenger_disembark(Passenger *passenger, Minibus *minibus);
+void Passenger_embark(Passenger *passenger, Minibus *minibus);
 
 #endif //CSLP_PASSENGER_H

@@ -43,17 +43,17 @@ static void my_event_cb(const struct event *evt, void *data)
  * - disembarkation of a passenger
  * - boarding of a new passenger
  */
-void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* request, int currentTime)
+void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentTime)
 {
     // Really large shortest journey time to start with
     int shortestJourneyTime = 50000000;
-    struct Minibus* quickestBus;
+    Minibus* quickestBus;
 
     // loop through minibuses to find the best one for our user
     for (int i = 0; i <= pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
-        struct Minibus* minibus = &minibuses[i];
+        Minibus* minibus = &minibuses[i];
         int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
 
         // If it's not the shortest, ignore it
@@ -75,14 +75,14 @@ void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* 
         delay(5000);
 
         // We need to make a new event, with a callback function
-        event_cb_register(my_event_cb, &my_custom_data);
+        //event_cb_register(my_event_cb, &my_custom_data);
     }
 }
 
-void Simulation_start(struct ParsedFile *pf)
+void Simulation_start(ParsedFile *pf)
 {
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
-    struct Minibus * minibuses = createMinibuses(pf);
+    Minibus * minibuses = createMinibuses(pf);
 
     // Print our minibuses
     Minibus_print(&minibuses[4]);
@@ -101,8 +101,8 @@ void Simulation_start(struct ParsedFile *pf)
         if (currentTime % requestRate == 0)
         {
             // Make a new (random) request
-            struct Passenger* passenger = Passenger_create();
-            struct Request* request = Passenger_make_request(passenger, pf->noStops);
+            Passenger* passenger = Passenger_create();
+            Request* request = Passenger_make_request(passenger, pf->noStops);
             Request_print(request);
 
             // Now we need to do something with this request...
@@ -115,7 +115,7 @@ void Simulation_start(struct ParsedFile *pf)
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        callback->cb(event, callback->data);
+        //callback->cb(event, callback->data);
 
     }
 
@@ -123,10 +123,10 @@ void Simulation_start(struct ParsedFile *pf)
 
 }
 
-struct Minibus * createMinibuses(struct ParsedFile *pf)
+Minibus * createMinibuses(ParsedFile *pf)
 {
     // Create an array of pointers to the minibuses that we've created
-    struct Minibus *minibuses = malloc(pf->noBuses * sizeof(struct Minibus*));
+    Minibus *minibuses = malloc(pf->noBuses * sizeof(Minibus*));
     for (int total = 0; total < pf->noBuses; total++)
     {
         minibuses[total] = *Minibus_create(0, 0, pf->busCapacity, pf->boardingTime);

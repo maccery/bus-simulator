@@ -6,9 +6,9 @@
 /**
  * Creates a request struct
  */
-struct Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime) {
-    // Allocate enough memory to create a new struct and check we have enough memory
-    struct Request *request = malloc(sizeof(struct Request));
+Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime) {
+    // Allocate enough memory to create a new and check we have enough memory
+    Request *request = malloc(sizeof(Request));
     assert(request != NULL);
 
     request->startStop = startStop;
@@ -21,7 +21,7 @@ struct Request *Request_create(int startStop, int destinationStop, int desiredBo
 /**
  * Frees the memory of a given request struct
  */
-void Request_destroy(struct Request *request) {
+void Request_destroy(Request *request) {
     assert(request != NULL);
     free(request);
 }
@@ -29,16 +29,16 @@ void Request_destroy(struct Request *request) {
 /**
  * Simply prints out the details of a request
  */
-void Request_print(struct Request *request) {
+void Request_print(Request *request) {
     printf("-> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
 }
 
 /**
  * Generates a random request
  * @param numberOfBusStops
- * @return struct Request*
+ * @return Request*
  */
-struct Request* Request_random(int numberOfBusStops) {
+Request* Request_random(int numberOfBusStops) {
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
     int startStop = (rand() % numberOfBusStops+1)-1;
