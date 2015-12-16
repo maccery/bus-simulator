@@ -7,34 +7,6 @@
 
 #include <time.h>
 
-// We need a queue of events
-
-
-// We need a callback struct
-typedef void (*event_cb_t)(const struct event *evt, void *userdata);
-int event_cb_register(event_cb_t cb, void *userdata);
-
-struct eventCallBack {
-    event_cb_t cb;
-    void *data;
-};
-
-
-void delay(int milliseconds)
-{
-    long pause;
-    clock_t now,then;
-
-    pause = milliseconds*(CLOCKS_PER_SEC/1000);
-    now = then = clock();
-    while( (now-then) < pause )
-        now = clock();
-}
-
-static void my_event_cb(const struct event *evt, void *data)
-{
-    /* do stuff and things with the event */
-}
 
 /*
  * Possible events:
@@ -72,14 +44,14 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
     else
     {
         printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
-        delay(5000);
+        //delay(5000);
 
         // We need to make a new event, with a callback function
         //event_cb_register(my_event_cb, &my_custom_data);
     }
 }
 
-void Simulation_start(ParsedFile *pf)
+void Simulation_start(ParsedFile *pf, int (*CallbackFunction)(void))
 {
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
     Minibus * minibuses = createMinibuses(pf);
@@ -90,6 +62,9 @@ void Simulation_start(ParsedFile *pf)
     Minibus_print(&minibuses[2]);
     Minibus_print(&minibuses[1]);
     Minibus_print(&minibuses[0]);
+
+    int k = CallbackFunction();
+    printf("hey %d",k);
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
@@ -115,8 +90,6 @@ void Simulation_start(ParsedFile *pf)
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        //callback->cb(event, callback->data);
-
     }
 
     // Free up the memory

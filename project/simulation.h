@@ -12,7 +12,7 @@
 typedef struct Simulation {
 } Simulation;
 
-void Simulation_start(ParsedFile *pf);
+void Simulation_start(ParsedFile *pf, int(*callback)(void));
 Minibus * createMinibuses(ParsedFile *pf);
 
 #endif //CSLP_SIMULATION_H
