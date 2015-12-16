@@ -3,8 +3,6 @@
 
 #include "dijkstra.h"
 
-
-
 // Creates a graph with V vertices and E edges
 struct Graph* createGraph(int V, int E)
 {

@@ -20,7 +20,7 @@ typedef struct Minibus {
 } Minibus;
 
 
-Minibus *Minibus_create(int currentStop, int occupancy, int capacity, int boardingTime);
+Minibus *Minibus_create(int id, int currentStop, int occupancy, int capacity, int boardingTime);
 void Minibus_print(Minibus *minibus);
 void Minibus_destroy(Minibus *minibus);
 Minibus* Minibus_random(int MinibusTime, int numberOfBusStops);

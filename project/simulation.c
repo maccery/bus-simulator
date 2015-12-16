@@ -41,12 +41,16 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
-        int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
 
-        // If it's not the shortest, ignore it
-        if (journeyTime <= shortestJourneyTime)
+        if (minibus->occupancy+1 <= pf->busCapacity)
         {
-            quickestBus = minibus;
+            int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
+
+            // If it's not the shortest, ignore it
+            if (journeyTime <= shortestJourneyTime)
+            {
+                quickestBus = minibus;
+            }
         }
     }
 
@@ -93,8 +97,8 @@ void Simulation_start(ParsedFile *pf)
         int requestRate = (int) pf->requestRate*60;
 
         // We only want to create a request with the request rate...
-        if (currentTime % requestRate == 0)
-        {
+        //if (currentTime % requestRate == 0)
+        //{
             // Make a new (random) request
             Passenger* passenger = Passenger_create();
             Request* request = Passenger_make_request(passenger, pf->noStops);
@@ -104,7 +108,7 @@ void Simulation_start(ParsedFile *pf)
             // This will calculate the SHORTEST time (in minutes) for a bus to get here...
             findBus(pf, minibuses, passenger, currentTime);
             //Passenger_destroy(passenger);
-        }
+        //}
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
@@ -128,7 +132,7 @@ Minibus * createMinibuses(ParsedFile *pf)
     Minibus *minibuses = malloc(pf->noBuses * sizeof(Minibus*));
     for (int total = 0; total < pf->noBuses; total++)
     {
-        minibuses[total] = *Minibus_create(0, 0, pf->busCapacity, pf->boardingTime);
+        minibuses[total] = *Minibus_create(total, 0, 0, pf->busCapacity, pf->boardingTime);
     }
     return minibuses;
 }
