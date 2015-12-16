@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <unistd.h>
 #include "parser.h"
 #include "simulation.h"
 
@@ -11,6 +12,7 @@ int main(int argc, char *argv[]) {
     ParsedFile *pf = parseFile(file);
 
     ParsedFile_print(pf);
+    sleep(1);
     Simulation_start(pf);
     //ParsedFile_destroy(pf);
 

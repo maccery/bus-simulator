@@ -55,8 +55,8 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
         //delay(5000);
 
         // We need to make a new event at the future time, with a callback function
-        int executionTime = shortestJourneyTime + currentTime;
-        Event *event = createEvent(10, doShit);
+        int executionTime = 5 + currentTime;
+        Event *event = createEvent(executionTime, doShit);
         addToEventQueue(*event);
     }
 
