@@ -62,7 +62,7 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
         //delay(5000);
 
         // We need to make a new event at the future time, with a callback function
-        int executionTime = 5 + currentTime;
+        int executionTime = travelTime + currentTime;
         if (quickestBus)
         {
             request->minibus = quickestBus;
