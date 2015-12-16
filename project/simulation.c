@@ -9,7 +9,7 @@
 
 
 int doShit() {
-    printf("callback function %d", 5);
+    printf("callback function %d\n", 5);
     return 5;
 }
 
@@ -59,6 +59,8 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
         Event *event = createEvent(10, doShit);
         addToEventQueue(*event);
     }
+
+    Request_destroy(request);
 }
 
 void Simulation_start(ParsedFile *pf)
@@ -90,18 +92,19 @@ void Simulation_start(ParsedFile *pf)
             // Now we need to do something with this request...
             // This will calculate the SHORTEST time (in minutes) for a bus to get here...
             findBus(pf, minibuses, request, currentTime);
-
-            //Request_destroy(request);
             //Passenger_destroy(passenger);
         }
 
         EventQueue *eq = findInEventQueue(currentTime, NULL);
-        Event event = eq->event;
-        event.callbackFunction;
+        if (eq)
+        {
+            Event event = eq->event;
+            event.callbackFunction();
+        }
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        printf("current time %d/n", currentTime);
+        printf("current time %d\n", currentTime);
     }
 
     // Free up the memory

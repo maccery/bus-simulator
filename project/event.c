@@ -15,8 +15,6 @@ Event *createEvent(int executionTime, int (*callbackFunction)(void))
     return event;
 }
 
-
-
 EventQueue *head = NULL;
 EventQueue *curr = NULL;
 
