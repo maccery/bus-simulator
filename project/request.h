@@ -1,7 +1,6 @@
 //
-// Created by Tom Macmichael on 19/11/2015.
+// Created by Tom Macmichael on 16/12/2015.
 //
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -10,6 +9,7 @@
 
 #ifndef CSLP_REQUEST_H
 #define CSLP_REQUEST_H
+
 typedef struct Request {
     int startStop;
     int destinationStop;

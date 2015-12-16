@@ -23,6 +23,7 @@ void Passenger_destroy(Passenger *passenger) {
 Request* Passenger_make_request(Passenger *passenger, int noStops) {
     Request* request = Request_random(noStops);
     passenger->request = request;
+//    request->passenger = *passenger;
 
     return request;
 }

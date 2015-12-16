@@ -8,6 +8,14 @@
 #include "parser.h"
 #include "request.h"
 #include "passenger.h"
+#include "minibus.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+#include <assert.h>
+#include "minibus.h"
+#include "request.h"
 
 typedef struct Simulation {
 } Simulation;

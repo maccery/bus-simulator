@@ -1,7 +1,26 @@
 //
 // Created by Tom Macmichael on 19/11/2015.
 //
+
 #include "request.h"
+
+unsigned int rand_interval(unsigned int min, unsigned int max)
+{
+    int r;
+    const unsigned int range = 1 + max - min;
+    const unsigned int buckets = RAND_MAX / range;
+    const unsigned int limit = buckets * range;
+
+    /* Create equal size buckets all in a row, then fire randomly towards
+     * the buckets until you land in one of them. All buckets are equally
+     * likely. If you land off the end of the line of buckets, try again. */
+    do
+    {
+        r = rand();
+    } while (r >= limit);
+
+    return min + (r / buckets);
+}
 
 /**
  * Creates a request struct
@@ -41,8 +60,9 @@ void Request_print(Request *request) {
 Request* Request_random(int numberOfBusStops) {
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
-    int startStop = (rand() % numberOfBusStops+1)-1;
-    int destinationStop = (rand() % numberOfBusStops+1)-1;
+    unsigned int max = (unsigned int) numberOfBusStops-1;
+    int startStop = rand_interval(0, max);
+    int destinationStop = rand_interval(0, numberOfBusStops);
 
     // Generates a random boarding time
     int desiredBoardingTime = 0000;

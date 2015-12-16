@@ -8,8 +8,12 @@
 #include "event.h"
 
 
-int doShit() {
+
+// Handles the situation when bus arrived
+int busArrived() {
+
     printf("callback function %d\n", 5);
+    //Passenger_embark(passenger, &passenger->currentBus);
     return 5;
 }
 
@@ -23,8 +27,10 @@ EventQueue *eventQueue = NULL;
  * - disembarkation of a passenger
  * - boarding of a new passenger
  */
-void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentTime)
+void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int currentTime)
 {
+    Request *request = passenger->request;
+
     // Really large shortest journey time to start with
     int shortestJourneyTime = 50000000;
     Minibus* quickestBus;
@@ -56,7 +62,7 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
 
         // We need to make a new event at the future time, with a callback function
         int executionTime = 5 + currentTime;
-        Event *event = createEvent(executionTime, doShit);
+        Event *event = createEvent(executionTime, busArrived());
         addToEventQueue(*event);
     }
 
@@ -91,10 +97,12 @@ void Simulation_start(ParsedFile *pf)
 
             // Now we need to do something with this request...
             // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-            findBus(pf, minibuses, request, currentTime);
+            findBus(pf, minibuses, passenger, currentTime);
             //Passenger_destroy(passenger);
         }
 
+        // At this time t, are there any events?
+        // If yes, we need to execute their callback function
         EventQueue *eq = findInEventQueue(currentTime, NULL);
         if (eq)
         {
@@ -102,8 +110,6 @@ void Simulation_start(ParsedFile *pf)
             event.callbackFunction();
         }
 
-        // At this time t, are there any events?
-        // If yes, we need to execute their callback function
         printf("current time %d\n", currentTime);
     }
 
