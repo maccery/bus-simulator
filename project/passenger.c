@@ -35,9 +35,9 @@ void Passenger_disembark(Passenger *passenger, Minibus *minibus) {
     printf("-> Minibus occupancy changed to %d\n", minibus->occupancy);
 }
 
-void Passenger_embark(Passenger *passenger, Minibus *minibus) {
+void Passenger_embark(Request *request, Minibus *minibus) {
     minibus->occupancy = minibus->occupancy+1;
-    passenger->currentBus = *minibus;
-    printf("-> Minibus added passenger at stop %d\n", minibus->currentStop);
-    printf("-> Minibus occupancy changed to %d\n", minibus->occupancy);
+    //passenger->currentBus = minibus;
+    printf("-> Minibus %d added passenger at stop %d\n", minibus->id, request->startStop);
+    printf("-> Minibus %d occupancy changed to %d\n", minibus->id, minibus->occupancy);
 }

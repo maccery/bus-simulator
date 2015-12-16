@@ -6,6 +6,7 @@
 #include <errno.h>
 #include <string.h>
 #include <assert.h>
+#include <minibus.h>
 
 #ifndef CSLP_REQUEST_H
 #define CSLP_REQUEST_H
@@ -14,6 +15,7 @@ typedef struct Request {
     int startStop;
     int destinationStop;
     int desiredBoardingTime;
+    Minibus *minibus;
 } Request;
 
 Request *Request_create(int startStop, int destinationStop, int desiredBoardingTime);

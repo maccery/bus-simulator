@@ -10,7 +10,7 @@
 #include "request.h"
 
 typedef struct Passenger {
-    Minibus currentBus;
+    Minibus *currentBus;
     Request *request;
 } Passenger;
 
@@ -18,6 +18,6 @@ Passenger *Passenger_create();
 Request* Passenger_make_request(Passenger *passenger, int noStops);
 void Passenger_destroy(Passenger *passenger);
 void Passenger_disembark(Passenger *passenger, Minibus *minibus);
-void Passenger_embark(Passenger *passenger, Minibus *minibus);
+void Passenger_embark(Request *request, Minibus *minibus);
 
 #endif //CSLP_PASSENGER_H

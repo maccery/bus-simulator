@@ -11,9 +11,9 @@
 
 // Handles the situation when bus arrived
 int busArrived(void *data) {
-    int hey = *((int*)data);
-    printf("callback function %d\n", hey);
-    //Passenger_embark(passenger, &passenger->currentBus);
+
+    Request *request = (Request*) data;
+    Passenger_embark(request, request->minibus);
     return 5;
 }
 
@@ -63,12 +63,15 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
 
         // We need to make a new event at the future time, with a callback function
         int executionTime = 5 + currentTime;
-        int hey = 55;
-        Event *event = createEvent(executionTime, busArrived, &hey);
+        if (quickestBus)
+        {
+            request->minibus = quickestBus;
+        }
+        Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event);
     }
 
-    Request_destroy(request);
+    //Request_destroy(request);
 }
 
 void Simulation_start(ParsedFile *pf)
