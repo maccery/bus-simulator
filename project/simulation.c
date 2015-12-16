@@ -2,28 +2,19 @@
 // Created by Tom Macmichael on 24/11/2015.
 //
 
+#include <stdbool.h>
 #include "simulation.h"
 #include "dijkstra.h"
+#include "event.h"
 
-#include <time.h>
-
-typedef struct Event {
-    int executionTime; // the time at which this event occurs
-    int (*callbackFunction)(void); // this is the callback function
-} Event;
-
-Event *createEvent(int executionTime, int (*callbackFunction)(void))
-{
-    Event *event = malloc(sizeof(Event));
-    event->executionTime = executionTime;
-    event->callbackFunction = callbackFunction;
-
-    return event;
-}
 
 int doShit() {
+    printf("callback function %d", 5);
     return 5;
 }
+
+// Global eventqueue
+EventQueue *eventQueue = NULL;
 
 /*
  * Possible events:
@@ -65,7 +56,8 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
 
         // We need to make a new event at the future time, with a callback function
         int executionTime = shortestJourneyTime + currentTime;
-        createEvent(executionTime, doShit);
+        Event *event = createEvent(10, doShit);
+        addToEventQueue(*event);
     }
 }
 
@@ -103,9 +95,13 @@ void Simulation_start(ParsedFile *pf)
             //Passenger_destroy(passenger);
         }
 
+        EventQueue *eq = findInEventQueue(currentTime, NULL);
+        Event event = eq->event;
+        event.callbackFunction;
+
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-
+        printf("current time %d/n", currentTime);
     }
 
     // Free up the memory
