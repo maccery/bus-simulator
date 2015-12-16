@@ -7,6 +7,19 @@
 
 #include <time.h>
 
+// We need a queue of events
+
+
+// We need a callback struct
+typedef void (*event_cb_t)(const struct event *evt, void *userdata);
+int event_cb_register(event_cb_t cb, void *userdata);
+
+struct eventCallBack {
+    event_cb_t cb;
+    void *data;
+};
+
+
 void delay(int milliseconds)
 {
     long pause;
@@ -16,6 +29,11 @@ void delay(int milliseconds)
     now = then = clock();
     while( (now-then) < pause )
         now = clock();
+}
+
+static void my_event_cb(const struct event *evt, void *data)
+{
+    /* do stuff and things with the event */
 }
 
 /*
@@ -55,7 +73,9 @@ void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* 
     {
         printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
         delay(5000);
-        // it's on its way, we need to schedule this / keep track of it
+
+        // We need to make a new event, with a callback function
+        event_cb_register(my_event_cb, &my_custom_data);
     }
 }
 
@@ -92,6 +112,11 @@ void Simulation_start(struct ParsedFile *pf)
             //Request_destroy(request);
             //Passenger_destroy(passenger);
         }
+
+        // At this time t, are there any events?
+        // If yes, we need to execute their callback function
+        callback->cb(event, callback->data);
+
     }
 
     // Free up the memory
