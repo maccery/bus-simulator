@@ -2,9 +2,6 @@
 #include "parser.h"
 #include "simulation.h"
 
-int doShit() {
-    return 5;
-}
 
 int main(int argc, char *argv[]) {
     // We need to get the input file, which is our first argument
@@ -14,7 +11,7 @@ int main(int argc, char *argv[]) {
     ParsedFile *pf = parseFile(file);
 
     ParsedFile_print(pf);
-    Simulation_start(pf, doShit);
+    Simulation_start(pf);
     //ParsedFile_destroy(pf);
 
 }

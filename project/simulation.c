@@ -7,6 +7,13 @@
 
 #include <time.h>
 
+typedef struct Event {
+    int (*callbackFunction)(void); // This is the callback function
+} Event;
+
+int doShit() {
+return 5;
+}
 
 /*
  * Possible events:
@@ -47,11 +54,11 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Request* request, int currentT
         //delay(5000);
 
         // We need to make a new event, with a callback function
-        //event_cb_register(my_event_cb, &my_custom_data);
+
     }
 }
 
-void Simulation_start(ParsedFile *pf, int (*CallbackFunction)(void))
+void Simulation_start(ParsedFile *pf)
 {
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
     Minibus * minibuses = createMinibuses(pf);
@@ -63,8 +70,12 @@ void Simulation_start(ParsedFile *pf, int (*CallbackFunction)(void))
     Minibus_print(&minibuses[1]);
     Minibus_print(&minibuses[0]);
 
-    int k = CallbackFunction();
-    printf("hey %d",k);
+    // Create an event
+    Event *event = malloc(sizeof(Event));
+    event->callbackFunction = doShit;
+
+    // call an event's callback
+    int hey = event->callbackFunction();
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
@@ -90,6 +101,7 @@ void Simulation_start(ParsedFile *pf, int (*CallbackFunction)(void))
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
+
     }
 
     // Free up the memory
