@@ -5,6 +5,19 @@
 #include "simulation.h"
 #include "dijkstra.h"
 
+#include <time.h>
+
+void delay(int milliseconds)
+{
+    long pause;
+    clock_t now,then;
+
+    pause = milliseconds*(CLOCKS_PER_SEC/1000);
+    now = then = clock();
+    while( (now-then) < pause )
+        now = clock();
+}
+
 /*
  * Possible events:
  * - new passenger request
@@ -12,8 +25,6 @@
  * - disembarkation of a passenger
  * - boarding of a new passenger
  */
-
-
 void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* request, int currentTime)
 {
     // Really large shortest journey time to start with
@@ -43,7 +54,8 @@ void findBus(struct ParsedFile *pf, struct Minibus * minibuses, struct Request* 
     else
     {
         printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
-        // it's on its way, we need to schedule this
+        delay(5000);
+        // it's on its way, we need to schedule this / keep track of it
     }
 }
 
