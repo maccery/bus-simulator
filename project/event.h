@@ -10,10 +10,11 @@
 
 typedef struct Event {
     int executionTime; // the time at which this event occurs
-    int (*callbackFunction)(void); // this is the callback function
+    int (*callbackFunction)(void*); // this is the callback function
+    void *data;
 } Event;
 
-Event *createEvent(int executionTime, int (*callbackFunction)(void));
+Event *createEvent(int executionTime, int (callbackFunction)(void*));
 
 typedef struct EventQueue
 {

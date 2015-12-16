@@ -10,12 +10,13 @@
 
 
 // Handles the situation when bus arrived
-int busArrived() {
-
-    printf("callback function %d\n", 5);
+int busArrived(void *data) {
+    int hey = (int) data;
+    printf("callback function %d\n", hey);
     //Passenger_embark(passenger, &passenger->currentBus);
     return 5;
 }
+
 
 // Global eventqueue
 EventQueue *eventQueue = NULL;
@@ -62,7 +63,8 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
 
         // We need to make a new event at the future time, with a callback function
         int executionTime = 5 + currentTime;
-        Event *event = createEvent(executionTime, busArrived());
+        void *data = request;
+        Event *event = createEvent(executionTime, busArrived);
         addToEventQueue(*event);
     }
 
@@ -107,7 +109,7 @@ void Simulation_start(ParsedFile *pf)
         if (eq)
         {
             Event event = eq->event;
-            event.callbackFunction();
+            event.callbackFunction(event.data);
         }
 
         printf("current time %d\n", currentTime);
