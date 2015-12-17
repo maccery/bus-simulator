@@ -8,6 +8,7 @@
 
 #include "parser.h"
 #include "minibus.h"
+#include "statistics.h"
 
 typedef struct Simulation {
     ParsedFile *pf;
@@ -17,7 +18,7 @@ typedef struct Simulation {
 
 
 Simulation *Simulation_create(ParsedFile *pf);
-void Simulation_start(Simulation *simulation);
+Statistics* Simulation_start(Simulation *simulation);
 Minibus * createMinibuses(ParsedFile *pf);
 
 #endif //CSLP_SIMULATION_H

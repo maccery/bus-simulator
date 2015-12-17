@@ -9,9 +9,9 @@
 #include "event.h"
 #include "passenger.h"
 
-
-
 Simulation *simulation;
+Statistics *statistics;
+
 int busArrivedAtDestination(void *data) {
     Request *request = (Request*) data;
 
@@ -32,6 +32,11 @@ int boardedPassenger(void *data) {
 
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
     addToEventQueue(*event, simulation);
+
+    // Update statistics
+    statistics->totalTrips = statistics->totalTrips + 1;
+    statistics->tripTotalLength = statistics->tripTotalLength + travelTime;
+
     return 5;
 }
 
@@ -138,8 +143,10 @@ Simulation *Simulation_create(ParsedFile *pf) {
     return s;
 }
 
-void Simulation_start(Simulation *simulation)
+Statistics* Simulation_start(Simulation *simulation)
 {
+    statistics = Statistics_create();
+
     ParsedFile *pf = simulation->pf;
 
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
@@ -181,7 +188,7 @@ void Simulation_start(Simulation *simulation)
     }
 
     // Free up the memory
-
+    return statistics;
 }
 
 Minibus * createMinibuses(ParsedFile *pf)

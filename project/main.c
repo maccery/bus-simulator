@@ -14,8 +14,11 @@ int main(int argc, char *argv[]) {
     ParsedFile_print(pf);
     sleep(1);
 
-    Simulation* simulation = Simulation_create(pf);
-    Simulation_start(simulation);
+    Simulation *simulation = Simulation_create(pf);
+    Statistics* statistics = Simulation_start(simulation);
+
+    printStatistics(statistics);
+
     //ParsedFile_destroy(pf);
 
 }
