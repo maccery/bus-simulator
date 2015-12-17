@@ -43,6 +43,13 @@ int busArrived(void *data) {
 
     // It takes some time to board the passengers, make event for this
     int executionTime = simulation->currentTime + simulation->pf->boardingTime;
+
+    // If we've arrived early, we can't depart yet
+    if (request->desiredBoardingTime > executionTime)
+    {
+        executionTime = request->desiredBoardingTime + simulation->pf->boardingTime;
+    }
+
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
 
