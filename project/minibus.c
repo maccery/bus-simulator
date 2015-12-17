@@ -24,5 +24,5 @@ void Minibus_destroy(Minibus *minibus) {
 }
 
 void Minibus_print(Minibus *minibus) {
-    printf("MINIBUS PRINT. Bus capacity: %d\n", minibus->capacity);
+    printf("MINIBUS PRINT. ID: %d Bus capacity: %d/%d\n", minibus->id, minibus->occupancy, minibus->capacity);
 }

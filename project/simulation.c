@@ -78,7 +78,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     formatTime(simulation->currentTime);
 
     // loop through minibuses to find the best one for our user
-    for (int i = 0; i <= pf->noBuses; i ++)
+    for (int i = 0; i < pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
@@ -114,9 +114,10 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         printf("\n");
 
         // We need to make a new event at the future time, with a callback function
+        quickestBus->occupancy++;
         request->minibus = quickestBus;
         // we wanna mark this bus as busy
-        request->minibus->occupancy++;
+        Minibus_print(request->minibus);
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
 //        printEventQueues();
