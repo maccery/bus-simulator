@@ -39,7 +39,7 @@ int boardedPassenger(void *data) {
 int busArrived(void *data) {
 
     Request *request = (Request*) data;
-    printf("-> minibus %d arrived at stop %d\n", request->minibus->id, request->startStop);
+    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
     // It takes some time to board the passengers, make event for this
     int executionTime = simulation->currentTime + simulation->pf->boardingTime;
