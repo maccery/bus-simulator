@@ -6,7 +6,7 @@
 #include "simulation.h"
 #include "dijkstra.h"
 #include "event.h"
-
+#include "passenger.h"
 
 
 // Handles the situation when bus arrived
@@ -54,11 +54,10 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
         }
     }
 
-
     // If the quickest time for the bus to get there, plus the travel time to destination is too late, we say so...
     int travelTime = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
     // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
-    if (!quickestBus || shortestJourneyTime + currentTime <= request->desiredBoardingTime)
+    if (!quickestBus || (shortestJourneyTime + currentTime) >= (request->desiredBoardingTime + pf->maxDelay))
     {
         printf("request cannot be accommodated\n");
     }
@@ -77,8 +76,20 @@ void findBus(ParsedFile *pf, Minibus * minibuses, Passenger* passenger, int curr
     //Request_destroy(request);
 }
 
-void Simulation_start(ParsedFile *pf)
+Simulation *Simulation_create(ParsedFile *pf) {
+    // Allocate enough memory to create a new and check we have enough memory
+    Simulation *simulation = malloc(sizeof(Simulation));
+    assert(simulation != NULL);
+
+    simulation->pf = pf;
+
+    return simulation;
+}
+
+void Simulation_start(Simulation *simulation)
 {
+    ParsedFile *pf = simulation->pf;
+
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
     Minibus * minibuses = createMinibuses(pf);
 
@@ -100,7 +111,8 @@ void Simulation_start(ParsedFile *pf)
         //{
             // Make a new (random) request
             Passenger* passenger = Passenger_create();
-            Request* request = Passenger_make_request(passenger, pf->noStops);
+            Request* request = Passenger_make_request(simulation);
+            passenger->request = request;
             Request_print(request);
 
             // Now we need to do something with this request...
@@ -119,6 +131,7 @@ void Simulation_start(ParsedFile *pf)
         }
 
         printf("current time %d\n", currentTime);
+        simulation->currentTime++;
     }
 
     // Free up the memory
@@ -131,7 +144,7 @@ Minibus * createMinibuses(ParsedFile *pf)
     Minibus *minibuses = malloc(pf->noBuses * sizeof(Minibus*));
     for (int total = 0; total < pf->noBuses; total++)
     {
-        minibuses[total] = *Minibus_create(total, 0, 0, pf->busCapacity, pf->boardingTime);
+        minibuses[total] = *Minibus_create(total, 0, 0, pf->busCapacity);
     }
     return minibuses;
 }

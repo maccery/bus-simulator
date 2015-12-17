@@ -5,22 +5,17 @@
 #ifndef CSLP_SIMULATION_H
 #define CSLP_SIMULATION_H
 
+
 #include "parser.h"
-#include "request.h"
-#include "passenger.h"
 #include "minibus.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <assert.h>
-#include "minibus.h"
-#include "request.h"
 
 typedef struct Simulation {
+    ParsedFile *pf;
+    int currentTime;
 } Simulation;
 
-void Simulation_start(ParsedFile *pf);
+Simulation *Simulation_create(ParsedFile *pf);
+void Simulation_start(Simulation *simulation);
 Minibus * createMinibuses(ParsedFile *pf);
 
 #endif //CSLP_SIMULATION_H

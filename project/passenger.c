@@ -20,9 +20,9 @@ void Passenger_destroy(Passenger *passenger) {
     free(passenger);
 }
 
-Request* Passenger_make_request(Passenger *passenger, int noStops) {
-    Request* request = Request_random(noStops);
-    passenger->request = request;
+Request* Passenger_make_request(Simulation *simulation) {
+    Request* request = Request_random(simulation);
+    //passenger->request = request;
 //    request->passenger = *passenger;
 
     return request;

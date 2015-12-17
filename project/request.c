@@ -3,6 +3,7 @@
 //
 
 #include "request.h"
+#include "simulation.h"
 
 unsigned int rand_interval(unsigned int min, unsigned int max)
 {
@@ -57,15 +58,18 @@ void Request_print(Request *request) {
  * @param numberOfBusStops
  * @return Request*
  */
-Request* Request_random(int numberOfBusStops) {
+Request* Request_random(Simulation *simulation) {
+    ParsedFile *pf = simulation->pf;
+
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
-    unsigned int max = (unsigned int) numberOfBusStops-1;
+    unsigned int max = (unsigned int) pf->noStops-1;
     int startStop = rand_interval(0, max);
-    int destinationStop = rand_interval(0, numberOfBusStops);
+    int destinationStop = rand_interval(0, max);
 
     // Generates a random boarding time
-    int desiredBoardingTime = 0000;
+    int pickupInterval = rand_interval(0, (unsigned int) pf->pickupInterval);
+    int desiredBoardingTime = simulation->currentTime + pickupInterval;
 
     return Request_create(startStop, destinationStop, desiredBoardingTime);
 }
