@@ -8,6 +8,7 @@
 #include "event.h"
 #include "passenger.h"
 
+
 Simulation *simulation;
 int busArrivedAtDestination(void *data) {
     Request *request = (Request*) data;
