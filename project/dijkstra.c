@@ -94,5 +94,7 @@ int makeDis(int map[12][12] , int edgeCount, int source, int destination)
         }
     }
     int timeInMinutes = BellmanFord(g, source, destination);
+
+    //printf("calculated time is %d\n", timeInMinutes);
     return timeInMinutes*60;
 }

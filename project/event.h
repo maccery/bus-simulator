@@ -22,8 +22,10 @@ typedef struct EventQueue
     struct EventQueue *next;
 } EventQueue;
 
-EventQueue* addToEventQueue(Event event);
-EventQueue* betterSearch(int exec);
+EventQueue* addToEventQueue(Event event, Simulation *simulation);
+EventQueue* betterSearch(int executionTime, Simulation *simulation);
 int deleteFromEventQueue(Event event);
+extern void formatTime(int seconds);
+
 
 #endif //CSLP_EVENT_H

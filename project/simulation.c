@@ -3,20 +3,11 @@
 //
 
 #include <stdbool.h>
+#include <unistd.h>
 #include "simulation.h"
-#include "dijkstra.h"
+#include "flloyd.h"
 #include "event.h"
 #include "passenger.h"
-
-void formatTime(int seconds)
-{
-    int hours = seconds / 3600;
-    int remainder = seconds % 3600;
-    int minutes = remainder / 60;
-    int secs = remainder % 60;
-
-    printf("<%d:%d:%d>\n", hours, minutes, secs);
-}
 
 
 
@@ -38,8 +29,11 @@ int busArrived(void *data) {
     // We now need to remove this event from the queue and pick up more folk
     int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
     int destinationTime = travelTime+simulation->currentTime;
+
+    formatTime(simulation->currentTime);
+    printf("-> Minibus %d is heading to its destination with passenger. ETA: %d\n", request->minibus->id, destinationTime);
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
-    addToEventQueue(*event);
+    addToEventQueue(*event, simulation);
 
     return 5;
 }
@@ -84,30 +78,29 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         }
     }
 
-    // If the quickest time for the bus to get there, plus the travel time to destination is too late, we say so...
-    int travelTime = makeDis(pf->map, pf->edgeCount, request->startStop, request->destinationStop);
+    int executionTime = shortestJourneyTime + simulation->currentTime;
+
     // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
     if (!quickestBus)
     {
         printf("Request cannot be accommodated. All minibuses are at maximum capacity\n");
     }
-    else if((shortestJourneyTime + simulation->currentTime) >= (request->desiredBoardingTime + pf->maxDelay))
+    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay))
     {
-        printf("Request cannot be accommodated. No bus will get there in desired time. Shortest journey time is: %d, current time is %d. desired boarding time is %d, max delay is %d\n", shortestJourneyTime, simulation->currentTime, request->desiredBoardingTime, pf->maxDelay);
+        printf("Request cannot be accommodated. No bus will get there in desired time.\n");
     }
     else
     {
-        printf("-> minibus %d is on its way! Gunna be there in %d seconds ok c u then xx\n", quickestBus->id, shortestJourneyTime);
+        printf("-> minibus %d is on its way! Gunna be there in %d seconds (at %d exact time) ok c u then xx\n", quickestBus->id, shortestJourneyTime, executionTime);
         //delay(5000);
 
         // We need to make a new event at the future time, with a callback function
-        int executionTime = travelTime + simulation->currentTime;
         request->minibus = quickestBus;
-
         // we wanna mark this bus as busy
         request->minibus->occupancy++;
         Event *event = createEvent(executionTime, busArrived, request);
-        addToEventQueue(*event);
+        addToEventQueue(*event, simulation);
+        sleep(1);
     }
 
     //Request_destroy(request);
@@ -152,6 +145,7 @@ void Simulation_start(Simulation *simulation)
             Passenger* passenger = Passenger_create();
             Request* request = Passenger_make_request(simulation);
             passenger->request = request;
+            formatTime(simulation->currentTime);
             Request_print(request);
 
             // Now we need to do something with this request...
@@ -162,9 +156,7 @@ void Simulation_start(Simulation *simulation)
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-
-        formatTime(simulation->currentTime);
-        betterSearch(currentTime);
+        betterSearch(currentTime, simulation);
 
         //printf("current time %d\n", simulation->currentTime);
         simulation->currentTime = currentTime;

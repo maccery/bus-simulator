@@ -3,6 +3,15 @@
 //
 
 #include "event.h"
+void formatTime(int seconds)
+{
+    int hours = seconds / 3600;
+    int remainder = seconds % 3600;
+    int minutes = remainder / 60;
+    int secs = remainder % 60;
+
+    printf("<%d:%d:%d> <%d> ", hours, minutes, secs, seconds);
+}
 
 
 // creates an event
@@ -35,7 +44,7 @@ EventQueue* create(Event event)
     return ptr;
 }
 
-EventQueue* addToEventQueue(Event event)
+EventQueue* addToEventQueue(Event event, Simulation *simulation)
 {
     if(NULL == head)
     {
@@ -48,6 +57,12 @@ EventQueue* addToEventQueue(Event event)
         printf("\n Node creation failed \n");
         return NULL;
     }
+
+    if (event.executionTime == simulation->currentTime)
+    {
+        event.executionTime++;
+    }
+
     ptr->event = event;
     ptr->next = NULL;
 
@@ -57,12 +72,15 @@ EventQueue* addToEventQueue(Event event)
     return ptr;
 }
 
-EventQueue* betterSearch(int executionTime) {
+EventQueue* betterSearch(int executionTime, Simulation *simulation) {
     EventQueue *tmp = head;
     int keepGoing = 1;
     while (tmp != NULL) {
         if (tmp->event.executionTime == executionTime) {
             // found it!
+            printf("Found an event\n");
+            formatTime(simulation->currentTime);
+
             Event event = tmp->event;
             event.callbackFunction(event.data);
 
