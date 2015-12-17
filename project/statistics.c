@@ -16,11 +16,16 @@ Statistics *Statistics_create() {
     return statistics;
 }
 
-int tripDuration(Statistics *statistics) {
-    int totalTrips = statistics->totalTrips;
-    int tripTotalLength = statistics->tripTotalLength;
+int averageDuration(Statistics *statistics) {
+    return statistics->tripTotalLength / statistics->totalTrips;
+}
 
-    return tripTotalLength/totalTrips;
+int averageOccupancy(Statistics *statistics) {
+    return 1;
+}
+
+int averageWaitingTime(Statistics *statistics) {
+    return statistics->totalWaitingTime / statistics->totalTrips;
 }
 
 void formatTimeToMins(int seconds)
@@ -33,11 +38,15 @@ void formatTimeToMins(int seconds)
     printf("%d:%d", minutes, secs);
 }
 
+
 void printStatistics(Statistics *statistics)
 {
-    int averageDuration = tripDuration(statistics);
+    printf("\n---average trip duration <average duration (");
+    formatTimeToMins(averageDuration(statistics));
+    printf(")>\n");
 
-    printf("average trip duration <average duration (");
-    formatTimeToMins(averageDuration);
-    printf(")");
+    printf("trip efficiency <average occupancy per time unit (%d)>\n", averageOccupancy(statistics));
+
+    printf("average waiting time <%d> seconds---\n", averageWaitingTime(statistics));
+
 }

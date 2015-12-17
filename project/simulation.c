@@ -54,6 +54,12 @@ int busArrived(void *data) {
     {
         executionTime = request->desiredBoardingTime + simulation->pf->boardingTime;
     }
+    // If we didn't arrive earlier, we need to record our waiting time
+    else
+    {
+        int waitingTime = executionTime-request->desiredBoardingTime;
+        statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
+    }
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
