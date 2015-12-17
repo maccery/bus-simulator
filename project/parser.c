@@ -7,7 +7,7 @@
 #include "dijkstra.h"
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
-                                     int maxDelay, int noBuses, int noStops, int stopTime) {
+                                     int maxDelay, int noBuses[5], int noStops, int stopTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
     ParsedFile *file = malloc(sizeof(ParsedFile));
     assert(file != NULL);
@@ -17,7 +17,6 @@ ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRa
     file->requestRate = requestRate;
     file->pickupInterval = pickupInterval;
     file->maxDelay = maxDelay;
-    file->noBuses = noBuses;
     file->noStops = noStops;
     file->stopTime = stopTime;
 
@@ -35,7 +34,7 @@ void ParsedFile_print(ParsedFile *file) {
     printf("\nRequest rate: %f", file->requestRate);
     printf("\nPickup interval: %f", file->pickupInterval);
     printf("\nMax delay: %d", file->maxDelay);
-    printf("\nNo buses: %d", file->noBuses);
+    printf("\nNo buses: %d", file->noBuses[0]);
     printf("\nNo stops: %d", file->noStops);
     printf("\nStop time: %d", file->stopTime);
     printf("\n");
@@ -116,7 +115,20 @@ ParsedFile * parseFile(FILE *file)
                 parsedFile->maxDelay = atoi(value) * 60; // time is given in minutes
             }
             else if (strcmp(variableName, "noBuses") == 0) {
-                parsedFile->noBuses = atoi(value);
+                // If the value is experiment, we know the next few numbers are gonna be experiment values (up to 5)
+                if (strcmp(value,"experiment") == 0)
+                {
+                    // Loop through the next tokens until we're at the end of the line
+                    int i = 0;
+                    for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " ")) {
+                        parsedFile->noBuses[i] = atoi(p);
+                        i++;
+                    }
+                }
+                else
+                {
+                    parsedFile->noBuses[0] = atoi(value);
+                }
             }
             else if (strcmp(variableName, "noStops") == 0) {
                 parsedFile->noStops = atoi(value);
