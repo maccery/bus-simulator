@@ -23,7 +23,7 @@ typedef struct EventQueue
 } EventQueue;
 
 EventQueue* addToEventQueue(Event event);
-EventQueue* findInEventQueue(int executionTime, EventQueue **prev);
+EventQueue* betterSearch(int exec);
 int deleteFromEventQueue(Event event);
 
 #endif //CSLP_EVENT_H

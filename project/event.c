@@ -57,6 +57,39 @@ EventQueue* addToEventQueue(Event event)
     return ptr;
 }
 
+EventQueue* betterSearch(int executionTime) {
+    EventQueue *tmp = head;
+    int keepGoing = 1;
+    while (tmp != NULL) {
+        if (tmp->event.executionTime == executionTime) {
+            // found it!
+            Event event = tmp->event;
+            event.callbackFunction(event.data);
+
+            if (tmp->next != NULL)
+            {
+                if (tmp->next->event.executionTime == executionTime)
+                {
+                    tmp = tmp->next;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+    return NULL;
+}
+
 // Finds an event by the exeution time
 EventQueue* findInEventQueue(int executionTime, EventQueue **prev)
 {
@@ -82,6 +115,7 @@ EventQueue* findInEventQueue(int executionTime, EventQueue **prev)
     {
         if(prev)
             *prev = tmp;
+
         return ptr;
     }
     else

@@ -19,6 +19,7 @@ void formatTime(int seconds)
 }
 
 
+
 Simulation *simulation;
 int busArrivedAtDestination(void *data) {
     Request *request = (Request*) data;
@@ -161,13 +162,9 @@ void Simulation_start(Simulation *simulation)
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        EventQueue *eq = findInEventQueue(currentTime, NULL);
-        if (eq)
-        {
-            formatTime(simulation->currentTime);
-            Event event = eq->event;
-            event.callbackFunction(event.data);
-        }
+
+        formatTime(simulation->currentTime);
+        betterSearch(currentTime);
 
         //printf("current time %d\n", simulation->currentTime);
         simulation->currentTime = currentTime;
