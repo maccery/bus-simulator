@@ -110,10 +110,10 @@ ParsedFile * parseFile(FILE *file)
                 parsedFile->requestRate = atoi(value);
             }
             else if (strcmp(variableName, "pickupInterval") == 0) {
-                parsedFile->pickupInterval = atoi(value);
+                parsedFile->pickupInterval = atoi(value) * 60; // time is given in minutes
             }
             else if (strcmp(variableName, "maxDelay") == 0) {
-                parsedFile->maxDelay = atoi(value);
+                parsedFile->maxDelay = atoi(value) * 60; // time is given in minutes
             }
             else if (strcmp(variableName, "noBuses") == 0) {
                 parsedFile->noBuses = atoi(value);
@@ -126,7 +126,7 @@ ParsedFile * parseFile(FILE *file)
                 }
             }
             else if (strcmp(variableName, "stopTime") == 0) {
-                parsedFile->stopTime = atoi(value);
+                parsedFile->stopTime = atoi(value) * 60 * 60; // time is given in hours
             }
             else if (lineNumber > -1 || strcmp(variableName, "map\n") == 0) {
 

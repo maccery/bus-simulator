@@ -1,12 +1,18 @@
-# Basic input script with valid input
+# capacity of a minibus in terms of number of passengers
 busCapacity 12
+# passenger boarding/disembarkation duration (in seconds)
 boardingTime 10
-requestRate 3.0
+# Average number of journey requests per hour
+requestRate 30.0
+# Average time between request and desired pick-up (in minutes)
 pickupInterval 30.0
+# Maximum time a user can wait beyond the desired pick-up time (in minutes)
 maxDelay 15
+# Number of minibuses
+noBuses 5
+# Number of bus stops
 noStops 6
-# Note that the distances in the service map below may be separated by one or multiple spaces.
-# Your parser should work with any number of white spaces and tabs in between keywords/values.
+# Road layout and distances (in minutes) between bus stops
 map
  0  3 -1 -1 -1  4
  3  0  5 -1 -1 -1

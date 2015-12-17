@@ -126,7 +126,7 @@ void Simulation_start(Simulation *simulation)
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
         // Convert request rate in seconds
-        int requestRate = (int) pf->requestRate*60;
+        int requestRate = (int) pf->requestRate * 60 *60;
 
         // We only want to create a request with the request rate...
         if (currentTime % requestRate == 0)
@@ -152,7 +152,7 @@ void Simulation_start(Simulation *simulation)
             event.callbackFunction(event.data);
         }
 
-        printf("current time %d\n", simulation->currentTime);
+        //printf("current time %d\n", simulation->currentTime);
         simulation->currentTime++;
     }
 
