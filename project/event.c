@@ -44,6 +44,21 @@ EventQueue* create(Event event)
     return ptr;
 }
 
+Event* searchEventQueue(Simulation *simulation) {
+    EventQueue *tmp = head;
+    //printf("Events in the event queue currently: ");
+    while (tmp != NULL) {
+        if (tmp->event.executionTime == simulation->currentTime) {
+            return &tmp->event;
+        }
+
+        //printf("%d, ", tmp->event.executionTime);
+        tmp = tmp->next;
+    }
+    //printf("\n");
+    return NULL;
+}
+
 EventQueue* addToEventQueue(Event event, Simulation *simulation)
 {
     if(NULL == head)
@@ -70,74 +85,4 @@ EventQueue* addToEventQueue(Event event, Simulation *simulation)
     head = ptr;
 
     return ptr;
-}
-
-EventQueue* betterSearch(int executionTime, Simulation *simulation) {
-    EventQueue *tmp = head;
-    int keepGoing = 1;
-    while (tmp != NULL) {
-        if (tmp->event.executionTime == executionTime) {
-            // found it!
-            printf("Found an event\n");
-            formatTime(simulation->currentTime);
-
-            Event event = tmp->event;
-            event.callbackFunction(event.data);
-
-            if (tmp->next != NULL)
-            {
-                if (tmp->next->event.executionTime == executionTime)
-                {
-                    tmp = tmp->next;
-                }
-                else
-                {
-                    break;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-        else
-        {
-            break;
-        }
-    }
-    return NULL;
-}
-
-// Finds an event by the exeution time
-EventQueue* findInEventQueue(int executionTime, EventQueue **prev)
-{
-    EventQueue *ptr = head;
-    EventQueue *tmp = NULL;
-    bool found = false;
-
-    while(ptr != NULL)
-    {
-        if(ptr->event.executionTime == executionTime)
-        {
-            found = true;
-            break;
-        }
-        else
-        {
-            tmp = ptr;
-            ptr = ptr->next;
-        }
-    }
-
-    if(true == found)
-    {
-        if(prev)
-            *prev = tmp;
-
-        return ptr;
-    }
-    else
-    {
-        return NULL;
-    }
 }

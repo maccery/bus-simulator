@@ -100,7 +100,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         request->minibus->occupancy++;
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
-        sleep(1);
+//        printEventQueues();
     }
 
     //Request_destroy(request);
@@ -156,9 +156,13 @@ void Simulation_start(Simulation *simulation)
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        betterSearch(currentTime, simulation);
+        Event *event = searchEventQueue(simulation);
+        if (event)
+        {
+            formatTime(simulation->currentTime);
+            event->callbackFunction(event->data);
+        }
 
-        //printf("current time %d\n", simulation->currentTime);
         simulation->currentTime = currentTime;
     }
 
