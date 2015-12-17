@@ -8,6 +8,16 @@
 #include "event.h"
 #include "passenger.h"
 
+void formatTime(int seconds)
+{
+    int hours = seconds / 3600;
+    int remainder = seconds % 3600;
+    int minutes = remainder / 60;
+    int secs = remainder % 60;
+
+    printf("<%d:%d:%d>\n", hours, minutes, secs);
+}
+
 
 Simulation *simulation;
 int busArrivedAtDestination(void *data) {
@@ -52,6 +62,8 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     int shortestJourneyTime = 50000000;
     Minibus* quickestBus = NULL;
 
+    formatTime(simulation->currentTime);
+
     // loop through minibuses to find the best one for our user
     for (int i = 0; i <= pf->noBuses; i ++)
     {
@@ -90,6 +102,9 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         // We need to make a new event at the future time, with a callback function
         int executionTime = travelTime + simulation->currentTime;
         request->minibus = quickestBus;
+
+        // we wanna mark this bus as busy
+        request->minibus->occupancy++;
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event);
     }
@@ -127,7 +142,7 @@ void Simulation_start(Simulation *simulation)
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
         // Convert request rate in seconds
-        int requestRate = (int) pf->requestRate * 60 *60;
+        int requestRate = (int) pf->requestRate;
 
         // We only want to create a request with the request rate...
         if (currentTime % requestRate == 0)
@@ -149,6 +164,7 @@ void Simulation_start(Simulation *simulation)
         EventQueue *eq = findInEventQueue(currentTime, NULL);
         if (eq)
         {
+            formatTime(simulation->currentTime);
             Event event = eq->event;
             event.callbackFunction(event.data);
         }

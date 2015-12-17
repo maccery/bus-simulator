@@ -93,5 +93,6 @@ int makeDis(int map[12][12] , int edgeCount, int source, int destination)
             }
         }
     }
-    return BellmanFord(g, source, destination);
+    int timeInMinutes = BellmanFord(g, source, destination);
+    return timeInMinutes*60;
 }
