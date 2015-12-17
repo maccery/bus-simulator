@@ -48,6 +48,7 @@ EventQueue* create(Event event)
  * Executes all events at the current time of simulation
  */
 void executeEvents(int executionTime) {
+
     EventQueue *tmp = head;
     while (tmp != NULL) {
         if (tmp->event.executionTime == executionTime) {

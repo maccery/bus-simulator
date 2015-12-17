@@ -20,19 +20,30 @@ int busArrivedAtDestination(void *data) {
     return 1;
 }
 
-// Handles the situation when bus arrived
-int busArrived(void *data) {
-
+// Boarding pasenger callback
+int boardedPassenger(void *data) {
     Request *request = (Request*) data;
     Passenger_embark(request, request->minibus);
 
     // We now need to remove this event from the queue and pick up more folk
     int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
-    int destinationTime = travelTime+simulation->currentTime;
-
+    int destinationTime = travelTime + simulation->currentTime;
     formatTime(simulation->currentTime);
-    printf("-> Minibus %d is heading to its destination with passenger. ETA: %d\n", request->minibus->id, destinationTime);
+
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
+    addToEventQueue(*event, simulation);
+    return 5;
+}
+
+// Handles the situation when bus arrived
+int busArrived(void *data) {
+
+    Request *request = (Request*) data;
+    printf("-> minibus %d arrived at stop %d\n", request->minibus->id, request->startStop);
+
+    // It takes some time to board the passengers, make event for this
+    int executionTime = simulation->currentTime + simulation->pf->boardingTime;
+    Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
 
     return 5;
