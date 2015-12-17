@@ -28,11 +28,11 @@ Request* Passenger_make_request(Simulation *simulation) {
     return request;
 }
 
-void Passenger_disembark(Passenger *passenger, Minibus *minibus) {
+void Passenger_disembark(Request *request, Minibus *minibus) {
     minibus->occupancy = minibus->occupancy-1;
     //passenger->currentBus = NULL;
-    printf("-> Minibus disembaraked passenger at stop %d\n", minibus->currentStop);
-    printf("-> Minibus occupancy changed to %d\n", minibus->occupancy);
+    printf("-> Minibus %d disembaraked passenger at stop %d\n", minibus->id, request->destinationStop);
+    printf("-> Minibus %d occupancy changed to %d\n",  minibus->id, minibus->occupancy);
 }
 
 void Passenger_embark(Request *request, Minibus *minibus) {

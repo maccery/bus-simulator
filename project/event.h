@@ -24,6 +24,6 @@ typedef struct EventQueue
 
 EventQueue* addToEventQueue(Event event);
 EventQueue* findInEventQueue(int executionTime, EventQueue **prev);
-int delete(Event event);
+int deleteFromEventQueue(Event event);
 
 #endif //CSLP_EVENT_H

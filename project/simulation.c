@@ -8,15 +8,29 @@
 #include "event.h"
 #include "passenger.h"
 
+Simulation *simulation;
+int busArrivedAtDestination(void *data) {
+    Request *request = (Request*) data;
+
+    Passenger_disembark(request, request->minibus);
+
+    return 1;
+}
 
 // Handles the situation when bus arrived
 int busArrived(void *data) {
 
     Request *request = (Request*) data;
     Passenger_embark(request, request->minibus);
+
+    // We now need to remove this event from the queue and pick up more folk
+    int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
+    int destinationTime = travelTime+simulation->currentTime;
+    Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
+    addToEventQueue(*event);
+
     return 5;
 }
-
 
 // Global eventqueue
 EventQueue *eventQueue = NULL;
@@ -84,12 +98,14 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
 
 Simulation *Simulation_create(ParsedFile *pf) {
     // Allocate enough memory to create a new and check we have enough memory
-    Simulation *simulation = malloc(sizeof(Simulation));
-    assert(simulation != NULL);
+    Simulation *s = malloc(sizeof(Simulation));
+    assert(s != NULL);
 
-    simulation->pf = pf;
+    s->pf = pf;
 
-    return simulation;
+    simulation = s;
+
+    return s;
 }
 
 void Simulation_start(Simulation *simulation)
@@ -113,8 +129,8 @@ void Simulation_start(Simulation *simulation)
         int requestRate = (int) pf->requestRate*60;
 
         // We only want to create a request with the request rate...
-        //if (currentTime % requestRate == 0)
-        //{
+        if (currentTime % requestRate == 0)
+        {
             // Make a new (random) request
             Passenger* passenger = Passenger_create();
             Request* request = Passenger_make_request(simulation);
@@ -125,7 +141,7 @@ void Simulation_start(Simulation *simulation)
             // This will calculate the SHORTEST time (in minutes) for a bus to get here...
             findBus(simulation, minibuses, passenger);
             //Passenger_destroy(passenger);
-        //}
+        }
 
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
