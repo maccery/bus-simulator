@@ -50,7 +50,7 @@ void Request_destroy(Request *request) {
  * Simply prints out the details of a request
  */
 void Request_print(Request *request) {
-    printf("-> new request placed from stop %d to stop %d for departure at %d scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
+    printf("-> new request placed from stop %d to stop %d for departure in %d seconds scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
 }
 
 /**

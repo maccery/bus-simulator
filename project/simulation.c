@@ -96,7 +96,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     }
     else
     {
-        printf("-> minibus %d is on its way! Gunna be there in %d mins ok c u then xx\n", quickestBus->id, travelTime);
+        printf("-> minibus %d is on its way! Gunna be there in %d seconds ok c u then xx\n", quickestBus->id, shortestJourneyTime);
         //delay(5000);
 
         // We need to make a new event at the future time, with a callback function
@@ -170,7 +170,7 @@ void Simulation_start(Simulation *simulation)
         }
 
         //printf("current time %d\n", simulation->currentTime);
-        simulation->currentTime++;
+        simulation->currentTime = currentTime;
     }
 
     // Free up the memory
