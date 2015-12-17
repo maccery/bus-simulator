@@ -4,6 +4,7 @@
 
 #include "request.h"
 #include "simulation.h"
+#include "event.h"
 
 unsigned int rand_interval(unsigned int min, unsigned int max)
 {
@@ -50,7 +51,10 @@ void Request_destroy(Request *request) {
  * Simply prints out the details of a request
  */
 void Request_print(Request *request) {
-    printf("-> new request placed from stop %d to stop %d for departure in %d seconds scheduled \n", request->startStop, request->destinationStop, request->desiredBoardingTime);
+    printf("-> new request placed from stop %d to stop %d for departure at ", request->startStop, request->destinationStop);
+    formatTime(request->desiredBoardingTime);
+    printf("\n");
+
 }
 
 /**
@@ -65,12 +69,12 @@ Request* Request_random(Simulation *simulation) {
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
     unsigned int max = (unsigned int) pf->noStops-1;
 
-    int startStop = 4;
-    int destinationStop = 2;
+    int startStop = 0;
+    int destinationStop = 0;
     while (startStop == destinationStop)
     {
-        //startStop = rand_interval(0, max);
-        //destinationStop = rand_interval(0, max);
+        startStop = rand_interval(0, max);
+        destinationStop = rand_interval(0, max);
     }
 
     // Generates a random boarding time

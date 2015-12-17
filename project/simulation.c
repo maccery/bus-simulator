@@ -102,8 +102,9 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     }
     else
     {
-        printf("-> minibus %d is on its way! Gunna be there in %d seconds (at %d exact time) ok c u then xx\n", quickestBus->id, shortestJourneyTime, executionTime);
-        //delay(5000);
+        printf("-> minibus %d is scheduled to arrive there at ", quickestBus->id);
+        formatTime(executionTime);
+        printf("\n");
 
         // We need to make a new event at the future time, with a callback function
         request->minibus = quickestBus;
