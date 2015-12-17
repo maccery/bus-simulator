@@ -26,7 +26,7 @@ EventQueue* addToEventQueue(Event event, Simulation *simulation);
 EventQueue* betterSearch(int executionTime, Simulation *simulation);
 int deleteFromEventQueue(Event event);
 extern void formatTime(int seconds);
-Event* searchEventQueue(Simulation *simulation);
+void executeEvents(int executionTime);
 
 
 #endif //CSLP_EVENT_H

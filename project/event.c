@@ -44,19 +44,19 @@ EventQueue* create(Event event)
     return ptr;
 }
 
-Event* searchEventQueue(Simulation *simulation) {
+/*
+ * Executes all events at the current time of simulation
+ */
+void executeEvents(int executionTime) {
     EventQueue *tmp = head;
-    //printf("Events in the event queue currently: ");
     while (tmp != NULL) {
-        if (tmp->event.executionTime == simulation->currentTime) {
-            return &tmp->event;
+        if (tmp->event.executionTime == executionTime) {
+            formatTime(executionTime);
+            tmp->event.callbackFunction(tmp->event.data);
         }
 
-        //printf("%d, ", tmp->event.executionTime);
         tmp = tmp->next;
     }
-    //printf("\n");
-    return NULL;
 }
 
 EventQueue* addToEventQueue(Event event, Simulation *simulation)

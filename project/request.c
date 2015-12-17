@@ -65,12 +65,12 @@ Request* Request_random(Simulation *simulation) {
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
     unsigned int max = (unsigned int) pf->noStops-1;
 
-    int startStop = 0;
-    int destinationStop = 0;
+    int startStop = 4;
+    int destinationStop = 2;
     while (startStop == destinationStop)
     {
-        startStop = rand_interval(0, max);
-        destinationStop = rand_interval(0, max);
+        //startStop = rand_interval(0, max);
+        //destinationStop = rand_interval(0, max);
     }
 
     // Generates a random boarding time
