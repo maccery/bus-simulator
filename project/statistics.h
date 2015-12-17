@@ -8,12 +8,14 @@ typedef struct Statistics {
     int totalTrips;
     int tripTotalLength;
     int totalWaitingTime;
+    int totalMissed;
+    int totalRequests;
 } Statistics;
 
 Statistics *Statistics_create();
 
 int averageDuration(Statistics *statistics);
-int averageOccupancy(Statistics *statistics);
+float averageOccupancy(Statistics *statistics);
 int averageWaitingTime(Statistics *statistics);
 
 void formatTimeToMins(int seconds);

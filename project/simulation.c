@@ -44,7 +44,6 @@ int boardedPassenger(void *data) {
 int busArrived(void *data) {
 
     Request *request = (Request*) data;
-    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
     // It takes some time to board the passengers, make event for this
     int executionTime = simulation->currentTime + simulation->pf->boardingTime;
@@ -57,9 +56,11 @@ int busArrived(void *data) {
     // If we didn't arrive earlier, we need to record our waiting time
     else
     {
-        int waitingTime = executionTime-request->desiredBoardingTime;
+        int waitingTime = executionTime - request->desiredBoardingTime;
         statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
     }
+
+    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
@@ -112,10 +113,12 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
     if (!quickestBus)
     {
+        statistics->totalMissed++;
         printf("Request cannot be accommodated. All minibuses are at maximum capacity\n");
     }
     else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay))
     {
+        statistics->totalMissed++;
         printf("Request cannot be accommodated. No bus will get there in desired time.\n");
     }
     else
@@ -133,6 +136,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         addToEventQueue(*event, simulation);
 //        printEventQueues();
     }
+    statistics->totalRequests++;
 
     //Request_destroy(request);
 }

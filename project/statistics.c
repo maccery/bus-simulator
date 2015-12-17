@@ -12,6 +12,9 @@ Statistics *Statistics_create() {
 
     statistics->tripTotalLength = 0;
     statistics->totalTrips = 0;
+    statistics->totalMissed = 0;
+    statistics->totalWaitingTime = 0;
+    statistics->totalRequests = 0;
 
     return statistics;
 }
@@ -20,12 +23,16 @@ int averageDuration(Statistics *statistics) {
     return statistics->tripTotalLength / statistics->totalTrips;
 }
 
-int averageOccupancy(Statistics *statistics) {
-    return 1;
+float averageOccupancy(Statistics *statistics) {
+    return 1.00;
 }
 
 int averageWaitingTime(Statistics *statistics) {
     return statistics->totalWaitingTime / statistics->totalTrips;
+}
+
+float percentageMissed(Statistics *statistics) {
+    return statistics->totalMissed * 100 / statistics->totalRequests;
 }
 
 void formatTimeToMins(int seconds)
@@ -41,12 +48,16 @@ void formatTimeToMins(int seconds)
 
 void printStatistics(Statistics *statistics)
 {
-    printf("\n---average trip duration <average duration (");
+    printf("\n---\naverage trip duration ");
     formatTimeToMins(averageDuration(statistics));
-    printf(")>\n");
+    printf("\n");
 
-    printf("trip efficiency <average occupancy per time unit (%d)>\n", averageOccupancy(statistics));
+    printf("trip efficiency %f\n", averageOccupancy(statistics));
 
-    printf("average waiting time <%d> seconds---\n", averageWaitingTime(statistics));
+    printf("percentage of missed requests %f\n", percentageMissed(statistics));
+
+    printf("average waiting time %d seconds\n", averageWaitingTime(statistics));
+
+    printf("average trip deviation 0.00\n---\n");
 
 }
