@@ -73,11 +73,6 @@ EventQueue* addToEventQueue(Event event, Simulation *simulation)
         return NULL;
     }
 
-    if (event.executionTime == simulation->currentTime)
-    {
-        event.executionTime++;
-    }
-
     ptr->event = event;
     ptr->next = NULL;
 
