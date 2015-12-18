@@ -9,7 +9,7 @@ pickupInterval 30.0
 # Maximum time a user can wait beyond the desired pick-up time (in minutes)
 maxDelay 15
 # Number of minibuses
-noBuses experiment 5 10
+noBuses experiment 10 8 4 2
 # Number of bus stops
 noStops 6
 # Road layout and distances (in minutes) between bus stops

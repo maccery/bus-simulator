@@ -17,13 +17,16 @@ int main(int argc, char *argv[]) {
     Simulation *simulations = parseFile(file);
 
     // Loop through the simulations, and run them
-    for (int total = 0; total < 5; total++) {
-        printf("SIMULATION %d\n", total);
-        Simulation *simulation = &simulations[total];
-        runSimulator(simulation);
+    for (int i = 0; i < 5; i++)
+    {
+        if ( &simulations[i])
+        {
+            printf("experiment %d\n", i);
+            runSimulator(&simulations[i]);
+            sleep(1);
+        }
     }
 
-    sleep(1);
 
     //ParsedFile_destroy(pf);
 

@@ -90,7 +90,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     formatTime(simulation->currentTime);
 
     // loop through minibuses to find the best one for our user
-    for (int i = 0; i < pf->noBuses[0]; i ++)
+    for (int i = 0; i < pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
@@ -197,8 +197,8 @@ Statistics* Simulation_start(Simulation *simulation)
 Minibus * createMinibuses(ParsedFile *pf)
 {
     // Create an array of pointers to the minibuses that we've created
-    Minibus *minibuses = malloc(pf->noBuses[0] * sizeof(Minibus*));
-    for (int total = 0; total < pf->noBuses[0]; total++)
+    Minibus *minibuses = malloc(pf->noBuses * sizeof(Minibus*));
+    for (int total = 0; total < pf->noBuses; total++)
     {
         minibuses[total] = *Minibus_create(total, 0, 0, pf->busCapacity);
     }

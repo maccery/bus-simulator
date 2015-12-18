@@ -24,7 +24,7 @@ typedef struct ParsedFile {
     float requestRate;
     float pickupInterval;
     int maxDelay;
-    int noBuses[5];
+    int noBuses;
     int noStops;
     int stopTime;
     int map[MATRIX_HEIGHT][MATRIX_WIDTH]; // Max size of the map is 6x6
@@ -43,7 +43,7 @@ Statistics* Simulation_start(Simulation *simulation);
 Minibus * createMinibuses(ParsedFile *pf);
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
-                                     int maxDelay, int noBuses[5], int noStops, int stopTime);
+                                     int maxDelay, int noBuses, int noStops, int stopTime);
 void ParsedFile_destroy(ParsedFile *file);
 void ParsedFile_print(ParsedFile *file);
 void ParsedFile_mapPrint(ParsedFile *file);

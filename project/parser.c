@@ -8,7 +8,7 @@
 #include "simulation.h"
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
-                                     int maxDelay, int noBuses[5], int noStops, int stopTime) {
+                                     int maxDelay, int noBuses, int noStops, int stopTime) {
     // Allocate enough memory to create a new struct and check we have enough memory
     ParsedFile *file = malloc(sizeof(ParsedFile));
     assert(file != NULL);
@@ -35,7 +35,7 @@ void ParsedFile_print(ParsedFile *file) {
     printf("\nRequest rate: %f", file->requestRate);
     printf("\nPickup interval: %f", file->pickupInterval);
     printf("\nMax delay: %d", file->maxDelay);
-    printf("\nNo buses: %d", file->noBuses[0]);
+    printf("\nNo buses: %d", file->noBuses);
     printf("\nNo stops: %d", file->noStops);
     printf("\nStop time: %d", file->stopTime);
     printf("\n");
@@ -76,6 +76,7 @@ void printParsedFile(ParsedFile *parsedFile)
  */
 Simulation *parseFile(FILE *file)
 {
+    int noBuses[5];
     char line[256];
 
     if (file == NULL) {
@@ -122,13 +123,13 @@ Simulation *parseFile(FILE *file)
                     // Loop through the next tokens until we're at the end of the line
                     int i = 0;
                     for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " ")) {
-                        parsedFile->noBuses[i] = atoi(p);
+                        noBuses[i] = atoi(p);
                         i++;
                     }
                 }
                 else
                 {
-                    parsedFile->noBuses[0] = atoi(value);
+                    noBuses[0] = atoi(value);
                 }
             }
             else if (strcmp(variableName, "noStops") == 0) {
@@ -190,9 +191,18 @@ Simulation *parseFile(FILE *file)
     // Create an array of pointers to the simulators that we've created
     int numberOfSimulations = 5;
     Simulation *simulations = malloc(numberOfSimulations * sizeof(Simulation*));
-    for (int total = 0; total < numberOfSimulations; total++)
+
+    // Make simulators for every combination of noBuses
+    for (int i = 0; i < 5; i++)
     {
-        simulations[total] = *Simulation_create(parsedFile);
+        if (noBuses[i])
+        {
+            // Make a copy of the parsed file, but update it with our no buses parameters
+            ParsedFile *parsedFileCopy = malloc(sizeof(ParsedFile));
+            *parsedFileCopy = *parsedFile;
+            parsedFileCopy->noBuses = noBuses[i];
+            simulations[i] = *Simulation_create(parsedFileCopy);
+        }
     }
 
     return simulations;
