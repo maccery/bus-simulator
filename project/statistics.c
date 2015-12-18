@@ -61,3 +61,21 @@ void printStatistics(Statistics *statistics)
     printf("average trip deviation 0.00\n---\n");
 
 }
+
+#include <math.h>
+int rand_interval(int min_n, int max_n)
+{
+    return rand() % (max_n - min_n + 1) + min_n;
+}
+
+/*
+ * Given a mean of an exponential distribtuion, returns a random value
+ */
+int exponentialRand(float mean) {
+    int random = rand_interval(0, 100);
+    double randomDigit = (double) random/100;
+    double randomNumber = -mean*log(randomDigit);
+    return (int) randomNumber;
+}
+
+

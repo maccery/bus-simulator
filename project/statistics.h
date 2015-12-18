@@ -20,3 +20,6 @@ int averageWaitingTime(Statistics *statistics);
 
 void formatTimeToMins(int seconds);
 void printStatistics(Statistics *statistics);
+
+extern int exponentialRand(float mean);
+int rand_interval(int min_n, int max_n);

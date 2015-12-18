@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "simulation.h"
-#include "flloyd.h"
+#include "dijkstra.h"
 #include "event.h"
 #include "passenger.h"
 
@@ -16,6 +16,9 @@ int busArrivedAtDestination(void *data) {
     Request *request = (Request*) data;
 
     Passenger_disembark(request, request->minibus);
+
+    // We can now destroy the passenger and the request
+    Request_destroy(request);
 
     return 1;
 }
@@ -28,7 +31,6 @@ int boardedPassenger(void *data) {
     // We now need to remove this event from the queue and pick up more folk
     int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
     int destinationTime = travelTime + simulation->currentTime;
-    formatTime(simulation->currentTime);
 
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
     addToEventQueue(*event, simulation);
@@ -46,24 +48,21 @@ int busArrived(void *data) {
     Request *request = (Request*) data;
 
     // It takes some time to board the passengers, make event for this
+    int executionTime = simulation->currentTime + simulation->pf->boardingTime;
 
-
-    int executionTime;
     // If we've arrived early, we can't depart yet
-    if (request->desiredBoardingTime > simulation->currentTime)
+    if (request->desiredBoardingTime > executionTime)
     {
         executionTime = request->desiredBoardingTime + simulation->pf->boardingTime;
-        printf("-> current time %d minibus %d arrived at stop %d. Waiting to depart at %d\n", simulation->currentTime, request->minibus->id, request->startStop, request->desiredBoardingTime);
     }
     // If we didn't arrive earlier, we need to record our waiting time
     else
     {
-        executionTime = simulation->currentTime + simulation->pf->boardingTime;
         int waitingTime = executionTime - request->desiredBoardingTime;
         statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
-        printf("-> minibus %d arrived at stop %d. Leaving soon %d\n", request->minibus->id, request->startStop, executionTime);
     }
 
+    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
@@ -93,14 +92,19 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     formatTime(simulation->currentTime);
 
     // loop through minibuses to find the best one for our user
-    for (int i = 0; i < pf->noBuses; i ++)
+    for (int i = 0; i <= pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
         if (minibus->occupancy < 1)
         {
-            int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
+
+            if (minibus->currentStop == 5)
+            {
+                minibus->currentStop = 4;
+            }
+            int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
 
             // If it's not the shortest, ignore it
             if (journeyTime <= shortestJourneyTime)
@@ -119,14 +123,14 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         statistics->totalMissed++;
         printf("Request cannot be accommodated. All minibuses are at maximum capacity\n");
     }
-    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay))
+    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay) || shortestJourneyTime < 0)
     {
         statistics->totalMissed++;
-        printf("Request cannot be accommodated. No bus will get there in desired time.\n");
+        printf("Request cannot be accommodated. No bus will get there in desired time. shortest journey: %d\n", shortestJourneyTime);
     }
     else
     {
-        printf("-> minibus %d is scheduled to arrive there at ", quickestBus->id);
+        printf("-> minibus %d is scheduled to arrive there (shortest journey: %d) at ",  quickestBus->id, shortestJourneyTime);
         formatTime(executionTime);
         printf("\n");
 
@@ -134,7 +138,6 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         quickestBus->occupancy++;
         request->minibus = quickestBus;
         // we wanna mark this bus as busy
-        Minibus_print(request->minibus);
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
 //        printEventQueues();
@@ -156,41 +159,58 @@ Simulation *Simulation_create(ParsedFile *pf) {
     return s;
 }
 
-Statistics* Simulation_start(Simulation *sim)
+void makeRandomRequest()
 {
-    simulation = sim;
+
+    ParsedFile *pf = simulation->pf;
+    float timeUntilNextRequest = exponentialRand((float) (60*pf->requestRate));
+    int executionTime = (int) timeUntilNextRequest + simulation->currentTime;
+
+    makeRequest(executionTime);
+}
+
+int makeRequestCallback(void *data) {
+
+    makeRandomRequest();
+
+    // Make a new (random) request
+    Passenger* passenger = Passenger_create();
+    Request* request = Passenger_make_request(simulation);
+    passenger->request = request;
+    Request_print(request);
+
+    // Now we need to do something with this request...
+    // This will calculate the SHORTEST time (in minutes) for a bus to get here...
+    findBus(simulation, simulation->minibuses, passenger);
+}
+
+void makeRequest(int executionTime)
+{
+    Event *event = createEvent(executionTime, makeRequestCallback, NULL);
+    addToEventQueue(*event, simulation);
+}
+
+
+Statistics* Simulation_start(Simulation *simulation)
+{
     statistics = Statistics_create();
 
     ParsedFile *pf = simulation->pf;
 
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
     Minibus * minibuses = createMinibuses(pf);
+    simulation->minibuses = minibuses;
+
+    // Start with one request
+    makeRandomRequest();
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
-        // Convert request rate in seconds
-        int requestRate = (int) pf->requestRate;
-
-        // We only want to create a request with the request rate...
-        if (currentTime % requestRate == 0)
-        {
-            // Make a new (random) request
-            Passenger* passenger = Passenger_create();
-            Request* request = Passenger_make_request(simulation);
-            passenger->request = request;
-            formatTime(simulation->currentTime);
-            Request_print(request);
-
-            // Now we need to do something with this request...
-            // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-            findBus(simulation, minibuses, passenger);
-            //Passenger_destroy(passenger);
-        }
-
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
         executeEvents(simulation->currentTime);
+
         simulation->currentTime = currentTime;
     }
 
@@ -208,3 +228,4 @@ Minibus * createMinibuses(ParsedFile *pf)
     }
     return minibuses;
 }
+

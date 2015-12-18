@@ -6,24 +6,6 @@
 #include "simulation.h"
 #include "event.h"
 
-unsigned int rand_interval(unsigned int min, unsigned int max)
-{
-    int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
-
-    /* Create equal size buckets all in a row, then fire randomly towards
-     * the buckets until you land in one of them. All buckets are equally
-     * likely. If you land off the end of the line of buckets, try again. */
-    do
-    {
-        r = rand();
-    } while (r >= limit);
-
-    return min + (r / buckets);
-}
-
 /**
  * Creates a request struct
  */
@@ -57,6 +39,7 @@ void Request_print(Request *request) {
 
 }
 
+
 /**
  * Generates a random request
  * @param numberOfBusStops
@@ -67,7 +50,7 @@ Request* Request_random(Simulation *simulation) {
 
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
-    unsigned int max = (unsigned int) pf->noStops-1;
+    int max = pf->noStops-1;
 
     int startStop = 0;
     int destinationStop = 0;
@@ -76,9 +59,8 @@ Request* Request_random(Simulation *simulation) {
         startStop = rand_interval(0, max);
         destinationStop = rand_interval(0, max);
     }
-
     // Generates a random boarding time
-    int pickupInterval = rand_interval(0, (unsigned int) pf->pickupInterval);
+    int pickupInterval = exponentialRand(pf->pickupInterval);
     int desiredBoardingTime = simulation->currentTime + pickupInterval;
 
     return Request_create(startStop, destinationStop, desiredBoardingTime);

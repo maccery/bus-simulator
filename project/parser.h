@@ -21,7 +21,7 @@
 typedef struct ParsedFile {
     int busCapacity;
     int boardingTime;
-    float requestRate;
+    double requestRate;
     float pickupInterval;
     int maxDelay;
     int noBuses;
