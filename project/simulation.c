@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "simulation.h"
-#include "flloyd.h"
+#include "dijkstra.h"
 #include "event.h"
 #include "passenger.h"
 
@@ -16,6 +16,9 @@ int busArrivedAtDestination(void *data) {
     Request *request = (Request*) data;
 
     Passenger_disembark(request, request->minibus);
+
+    // We can now destroy the passenger and the request
+    Request_destroy(request);
 
     return 1;
 }
@@ -90,15 +93,20 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     formatTime(simulation->currentTime);
 
     // loop through minibuses to find the best one for our user
-    for (int i = 0; i < pf->noBuses; i ++)
+    for (int i = 0; i <= pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
         if (minibus->occupancy < 1)
         {
-            int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
-            printf("minibus current stop: %d, request start stop: %d. JOURNEY TIME: %d\n", journeyTime, minibus->currentStop, request->startStop);
+
+            if (minibus->currentStop == 5)
+            {
+                minibus->currentStop = 4;
+            }
+            int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
+
             // If it's not the shortest, ignore it
             if (journeyTime <= shortestJourneyTime)
             {
@@ -163,6 +171,9 @@ void makeRandomRequest()
 }
 
 int makeRequestCallback(void *data) {
+
+    makeRandomRequest();
+
     // Make a new (random) request
     Passenger* passenger = Passenger_create();
     Request* request = Passenger_make_request(simulation);
@@ -173,8 +184,6 @@ int makeRequestCallback(void *data) {
     // Now we need to do something with this request...
     // This will calculate the SHORTEST time (in minutes) for a bus to get here...
     findBus(simulation, simulation->minibuses, passenger);
-
-    makeRandomRequest();
 }
 
 void makeRequest(int executionTime)
