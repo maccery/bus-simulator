@@ -46,21 +46,24 @@ int busArrived(void *data) {
     Request *request = (Request*) data;
 
     // It takes some time to board the passengers, make event for this
-    int executionTime = simulation->currentTime + simulation->pf->boardingTime;
 
+
+    int executionTime;
     // If we've arrived early, we can't depart yet
-    if (request->desiredBoardingTime > executionTime)
+    if (request->desiredBoardingTime > simulation->currentTime)
     {
         executionTime = request->desiredBoardingTime + simulation->pf->boardingTime;
+        printf("-> current time %d minibus %d arrived at stop %d. Waiting to depart at %d\n", simulation->currentTime, request->minibus->id, request->startStop, request->desiredBoardingTime);
     }
     // If we didn't arrive earlier, we need to record our waiting time
     else
     {
+        executionTime = simulation->currentTime + simulation->pf->boardingTime;
         int waitingTime = executionTime - request->desiredBoardingTime;
         statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
+        printf("-> minibus %d arrived at stop %d. Leaving soon %d\n", request->minibus->id, request->startStop, executionTime);
     }
 
-    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
@@ -153,8 +156,9 @@ Simulation *Simulation_create(ParsedFile *pf) {
     return s;
 }
 
-Statistics* Simulation_start(Simulation *simulation)
+Statistics* Simulation_start(Simulation *sim)
 {
+    simulation = sim;
     statistics = Statistics_create();
 
     ParsedFile *pf = simulation->pf;

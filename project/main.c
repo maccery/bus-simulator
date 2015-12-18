@@ -5,8 +5,8 @@
 
 
 void runSimulator(Simulation *simulation) {
-    //Statistics* statistics = Simulation_start(simulation);
-    //printStatistics(statistics);
+    Statistics* statistics = Simulation_start(simulation);
+    printStatistics(statistics);
     ParsedFile_print(simulation->pf);
 }
 
@@ -17,14 +17,15 @@ int main(int argc, char *argv[]) {
     Simulation *simulations = parseFile(file);
 
     // Loop through the simulations, and run them
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 9; i++)
     {
-        printf("experimentnnn %i\n",i);
+        printf("\n------------ EXPERIMENT %d ---------------\n",i);
         if (&simulations[i])
         {
             runSimulator(&simulations[i]);
             sleep(1);
         }
+        printf("\n");
     }
 
 
