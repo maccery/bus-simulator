@@ -26,4 +26,8 @@ void Request_destroy(Request *request);
 void Request_print(Request *request);
 Request* Request_random(Simulation *simulation);
 
+
+void Passenger_disembark(Request *request, Minibus *minibus);
+void Passenger_embark(Request *request, Minibus *minibus);
+
 #endif //CSLP_REQUEST_H

@@ -3,7 +3,6 @@
 //
 
 #include "minibus.h"
-#include "passenger.h"
 
 Minibus *Minibus_create(int id, int currentStop, int occupancy, int capacity) {
     // Allocate enough memory to create a new struct and check we have enough memory

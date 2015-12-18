@@ -7,7 +7,7 @@
 #include "simulation.h"
 #include "dijkstra.h"
 #include "event.h"
-#include "passenger.h"
+#include "request.h"
 
 Simulation *simulation;
 Statistics *statistics;
