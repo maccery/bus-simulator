@@ -130,8 +130,8 @@ ParsedFile * parseFile(FILE *file)
             }
             else if (lineNumber > -1 || strcmp(variableName, "map\n") == 0) {
 
-                // Essentially says to skip this if we're just on the 'map' definition line
-                if (lineNumber > -1) {
+                    // Essentially says to skip this if we're just on the 'map' definition line
+                    if (lineNumber > -1) {
 
                         // We've already got the first two values, so we'll store them
                         parsedFile->map[lineNumber][0] = atoi(variableName);

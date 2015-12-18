@@ -73,6 +73,31 @@ int busArrived(void *data) {
 // Global eventqueue
 EventQueue *eventQueue = NULL;
 
+int isReroutingPossible()
+{
+    // What are our nodes to visit?
+    int possible = 1;
+    for (int i = 0; i < nodeCount; i++)
+    {
+        int currentTime = simulation->currentTime;
+
+        for (int j = 0; j < nodeCount; j++) {
+            int shortestPath = makeDis(simulation->pf, simulation->pf->edgeCount, node[i]->stop, node2[j]->stop);
+            int combinationTime = currentTime + shortestPath;
+
+            if (combinationTime >= node2[j]->boardingTime) {
+                possible = 0;
+            }
+        }
+        if (possible == 1)
+        {
+            return 1;
+        }
+        return 0;
+    }
+
+}
+
 /*
  * Possible events:
  * - new passenger request

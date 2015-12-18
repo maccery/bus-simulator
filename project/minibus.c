@@ -12,7 +12,7 @@ Minibus *Minibus_create(int id, int currentStop, int occupancy, int capacity) {
     minibus->id = id;
     minibus->currentStop = currentStop;
     minibus->occupancy = occupancy;
-    minibus->capacity = capacity;
+    minibus->capacity = capacity;;
 
     return minibus;
 }

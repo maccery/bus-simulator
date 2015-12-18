@@ -29,7 +29,6 @@ void testMakeRequest()
     // Make a request
     makeRequest(0);
     // Test it exists
-
 }
 
 void runTests()
