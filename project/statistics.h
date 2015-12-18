@@ -12,7 +12,7 @@ typedef struct Statistics {
     int totalRequests;
 } Statistics;
 
-Statistics *Statistics_create();
+Statistics *Statistics_create(int tripTotalLength, int totalTrips, int totalMissed, int totalWaitingTime, int  totalrequests);
 
 int averageDuration(Statistics *statistics);
 float averageOccupancy(Statistics *statistics);

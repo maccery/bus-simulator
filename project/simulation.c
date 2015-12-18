@@ -193,7 +193,7 @@ void makeRequest(int executionTime)
 
 Statistics* Simulation_start(Simulation *simulation)
 {
-    statistics = Statistics_create();
+    statistics = Statistics_create(0,0,0,0,0);
 
     ParsedFile *pf = simulation->pf;
 

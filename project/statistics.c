@@ -6,15 +6,15 @@
 #include <stdlib.h>
 #include "statistics.h"
 
-Statistics *Statistics_create() {
+Statistics *Statistics_create(int tripTotalLength, int totalTrips, int totalMissed, int totalWaitingTime, int  totalrequests) {
     Statistics *statistics = malloc(sizeof(Statistics));
     assert(statistics != NULL);
 
-    statistics->tripTotalLength = 0;
-    statistics->totalTrips = 0;
-    statistics->totalMissed = 0;
-    statistics->totalWaitingTime = 0;
-    statistics->totalRequests = 0;
+    statistics->tripTotalLength = tripTotalLength;
+    statistics->totalTrips = totalTrips;
+    statistics->totalMissed = totalMissed;
+    statistics->totalWaitingTime = totalWaitingTime;
+    statistics->totalRequests = totalrequests;
 
     return statistics;
 }
