@@ -75,6 +75,7 @@ void Passenger_disembark(Request *request, Minibus *minibus) {
 }
 
 void Passenger_embark(Request *request, Minibus *minibus) {
+    minibus->occupancy++;
     minibus->currentStop = request->startStop;
     //minibus->occupancy = minibus->occupancy+1;
     printf("-> Minibus %d added passenger at stop %d. ", minibus->id, request->startStop);

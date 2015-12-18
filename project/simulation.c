@@ -89,7 +89,7 @@ int isReroutingPossible(Minibus *minibus, Request *request)
     {
 
         int currentTime = simulation->currentTime;
-
+        int shortestPossibleTime = 0;
         for (int j = 0; j < noRequests; j++) {
             //Request *r = &requests[j];
             if (r[j].desiredBoardingTime > 5) {
@@ -101,14 +101,20 @@ int isReroutingPossible(Minibus *minibus, Request *request)
                     possible = 0;
                 }
 
+                if (r[j].startStop == request->startStop)
+                {
+                    shortestPossibleTime = shortestPath;
+                }
+
             }
         }
         if (possible == 1)
         {
-            return 1;
+            // It's possible, we just need to say when it'll get there for
+            return shortestPossibleTime;
         }
     }
-    return 0;
+    return -1;
 }
 
 
@@ -135,17 +141,16 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
-        int hey = isReroutingPossible(minibus, request);
-        printf("Rerouting is possible: %d\n", hey);
-
-        if (minibus->occupancy < 12 && isReroutingPossible(minibus, request) == 1)
+        if (minibus->occupancy < 12)
         {
+            // Can we possible route any buses here?
+            int journeyTime = isReroutingPossible(minibus, request);
 
             if (minibus->currentStop == 5)
             {
                 minibus->currentStop = 4;
             }
-            int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
+            //int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
 
             // If it's not the shortest, ignore it
             if (journeyTime <= shortestJourneyTime)
@@ -176,7 +181,6 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         printf("\n");
 
         // We need to make a new event at the future time, with a callback function
-        quickestBus->occupancy++;
         request->minibus = quickestBus;
 
         // we wanna mark this bus as busy
