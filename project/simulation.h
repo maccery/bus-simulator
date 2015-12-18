@@ -25,5 +25,6 @@ Minibus * createMinibuses(ParsedFile *pf);
 void makeRandomRequest();
 void makeRequest(int time);
 int makeRequestCallback(void *data);
-
+int busArrivedAtDestination(void *data);
+int busArrived(void *data);
 #endif //CSLP_SIMULATION_H

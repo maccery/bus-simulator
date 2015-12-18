@@ -4,6 +4,7 @@
 
 #include "event.h"
 #include "request.h"
+#include "simulation.h"
 
 void formatTime(int seconds)
 {
@@ -63,16 +64,20 @@ void executeEvents(int executionTime) {
 }
 
 /* Given a minibus, returns all the events for it*/
-void eventsForMinibus(Minibus *minibus)
+void stopsForMinibus(Minibus *minibus)
 {
     EventQueue *tmp = head;
     while (tmp != NULL) {
         Request *request = (Request*) tmp->event.data;
         if (request) {
-        if (request->minibus->id == minibus->id) {
-            printf("Minibus %d has an upcoming event at %d", minibus->id, tmp->event.executionTime);
-        }
-        }
+        if (request->minibus) {
+            if (request->minibus->id == minibus->id) {
+                if(tmp->event.callbackFunction == busArrived)
+                {
+                    printf("Minibus %d has an upcoming stop\n", minibus->id);
+                }
+            }
+        }}
 
         tmp = tmp->next;
     }

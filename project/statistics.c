@@ -36,7 +36,8 @@ int averageWaitingTime(Statistics *statistics) {
 }
 
 float percentageMissed(Statistics *statistics) {
-    return statistics->totalMissed * 100 / statistics->totalRequests;
+    //return statistics->totalMissed * 100 / statistics->totalRequests;
+    return 0;
 }
 
 void formatTimeToMins(int seconds)
