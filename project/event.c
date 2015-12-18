@@ -64,9 +64,11 @@ void executeEvents(int executionTime) {
 }
 
 /* Given a minibus, returns all the events for it*/
-void stopsForMinibus(Minibus *minibus, Simulation *simulation)
+Request * stopsForMinibus(Minibus *minibus, Simulation *simulation)
 {
-    
+    Request *requests = malloc(12 * sizeof(Request*));
+
+    int i = 0;
     EventQueue *tmp = head;
     while (tmp != NULL) {
         Request *request = (Request*) tmp->event.data;
@@ -77,8 +79,9 @@ void stopsForMinibus(Minibus *minibus, Simulation *simulation)
                 {
                     if (tmp->event.executionTime >= simulation->currentTime)
                     {
-                        Request *request = (Request*) tmp->event.data;
-                    printf("Minibus %d has an upcoming stop %d\n", minibus->id, request->startStop);
+                        requests[i] = *(Request*) tmp->event.data;
+                        i++;
+                    printf("Minibus %d has an upcoming stop %d, desired boarding time %d\n", minibus->id, request->startStop, request->desiredBoardingTime);
 
                     }
                 }
@@ -87,6 +90,8 @@ void stopsForMinibus(Minibus *minibus, Simulation *simulation)
 
         tmp = tmp->next;
     }
+
+    return requests;
 }
 
 EventQueue* addToEventQueue(Event event, Simulation *simulation)

@@ -79,30 +79,36 @@ int isReroutingPossible(Minibus *minibus, Request *request)
     //stopsForMinibus(request->minibus);
 
     // Make an array of bus requests
-    int noRequests = 5;
-    Request *requests = malloc(noRequests * sizeof(Request*));
-    requests[0] = *request;
+    int noRequests = 2;
+    Request * r = stopsForMinibus(minibus, simulation);
+    //requests[0] = *request;
 
     // What are our nodes to visit?
     int possible = 1;
     for (int i = 0; i < noRequests; i++)
     {
+
         int currentTime = simulation->currentTime;
 
         for (int j = 0; j < noRequests; j++) {
-            int shortestPath = makeDis(simulation->pf, simulation->pf->edgeCount, requests[i].startStop, requests[j].startStop);
-            int combinationTime = currentTime + shortestPath;
+            //Request *r = &requests[j];
+            if (r[j].desiredBoardingTime > 5) {
 
-            if (combinationTime >= requests[j].desiredBoardingTime) {
-                possible = 0;
+                int shortestPath = makeDis(simulation->pf->map, simulation->pf->edgeCount, r[i].startStop, r[j].startStop);
+                int combinationTime = currentTime + shortestPath;
+
+                if (combinationTime >= (r->desiredBoardingTime + simulation->pf->maxDelay)) {
+                    possible = 0;
+                }
+
             }
         }
         if (possible == 1)
         {
             return 1;
         }
-        return 0;
     }
+    return 0;
 }
 
 
@@ -128,6 +134,9 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
+
+        int hey = isReroutingPossible(minibus, request);
+        printf("Rerouting is possible: %d\n", hey);
 
         if (minibus->occupancy < 1)
         {

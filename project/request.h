@@ -13,6 +13,13 @@
 #include <minibus.h>
 #include "simulation.h"
 
+#include <math.h>
+#ifdef NAN
+/* NAN is supported */
+#endif
+#ifdef INFINITY
+/* INFINITY is supported */
+#endif
 
 typedef struct Request {
     int startStop;
