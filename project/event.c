@@ -3,6 +3,8 @@
 //
 
 #include "event.h"
+#include "request.h"
+
 void formatTime(int seconds)
 {
     int hours = seconds / 3600;
@@ -54,6 +56,22 @@ void executeEvents(int executionTime) {
         if (tmp->event.executionTime == executionTime) {
             formatTime(executionTime);
             tmp->event.callbackFunction(tmp->event.data);
+        }
+
+        tmp = tmp->next;
+    }
+}
+
+/* Given a minibus, returns all the events for it*/
+void eventsForMinibus(Minibus *minibus)
+{
+    EventQueue *tmp = head;
+    while (tmp != NULL) {
+        Request *request = (Request*) tmp->event.data;
+        if (request) {
+        if (request->minibus->id == minibus->id) {
+            printf("Minibus %d has an upcoming event at %d", minibus->id, tmp->event.executionTime);
+        }
         }
 
         tmp = tmp->next;

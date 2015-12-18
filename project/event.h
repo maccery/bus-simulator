@@ -27,6 +27,6 @@ EventQueue* betterSearch(int executionTime, Simulation *simulation);
 int deleteFromEventQueue(Event event);
 extern void formatTime(int seconds);
 void executeEvents(int executionTime);
-
+void eventsForMinibus(Minibus *minibus);
 
 #endif //CSLP_EVENT_H

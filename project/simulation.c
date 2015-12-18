@@ -73,19 +73,28 @@ int busArrived(void *data) {
 // Global eventqueue
 EventQueue *eventQueue = NULL;
 
-int isReroutingPossible()
+/* Can minibus take in new request */
+int isReroutingPossible(Minibus *minibus, Request *request)
 {
+    // Gets all future events for minibus
+    Event* events = eventsForMinibus(request->minibus);
+
+    // Make an array of bus requests
+    int noRequests = 5;
+    Request *requests = malloc(noRequests * sizeof(Request*));
+    requests[0] = *request;
+
     // What are our nodes to visit?
     int possible = 1;
-    for (int i = 0; i < nodeCount; i++)
+    for (int i = 0; i < noRequests; i++)
     {
         int currentTime = simulation->currentTime;
 
-        for (int j = 0; j < nodeCount; j++) {
-            int shortestPath = makeDis(simulation->pf, simulation->pf->edgeCount, node[i]->stop, node2[j]->stop);
+        for (int j = 0; j < noRequests; j++) {
+            int shortestPath = makeDis(simulation->pf, simulation->pf->edgeCount, requests[i].startStop, requests[j].startStop);
             int combinationTime = currentTime + shortestPath;
 
-            if (combinationTime >= node2[j]->boardingTime) {
+            if (combinationTime >= requests[j].desiredBoardingTime) {
                 possible = 0;
             }
         }
@@ -95,8 +104,8 @@ int isReroutingPossible()
         }
         return 0;
     }
-
 }
+
 
 /*
  * Possible events:
@@ -161,9 +170,11 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         // We need to make a new event at the future time, with a callback function
         quickestBus->occupancy++;
         request->minibus = quickestBus;
+
         // we wanna mark this bus as busy
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
+
 //        printEventQueues();
     }
     statistics->totalRequests++;
