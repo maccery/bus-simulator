@@ -5,25 +5,6 @@
 #include "request.h"
 #include "simulation.h"
 #include "event.h"
-#include <math.h>
-
-unsigned int rand_interval(unsigned int min, unsigned int max)
-{
-    int r;
-    const unsigned int range = 1 + max - min;
-    const unsigned int buckets = RAND_MAX / range;
-    const unsigned int limit = buckets * range;
-
-    /* Create equal size buckets all in a row, then fire randomly towards
-     * the buckets until you land in one of them. All buckets are equally
-     * likely. If you land off the end of the line of buckets, try again. */
-    do
-    {
-        r = rand();
-    } while (r >= limit);
-
-    return min + (r / buckets);
-}
 
 /**
  * Creates a request struct
@@ -58,19 +39,6 @@ void Request_print(Request *request) {
 
 }
 
-
-/*
- * Given a mean of an exponential distribtuion, returns a random value
- */
-int exponentialRand(float mean) {
-    double random = rand_interval(0, 100);
-    double randomDigit = random/100;
-    printf("random mean: %f, digit: %f\n", mean, randomDigit);
-
-    int randomNumber = (int) -mean*log(randomDigit);
-
-    return randomNumber;
-}
 
 /**
  * Generates a random request

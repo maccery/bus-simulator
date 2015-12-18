@@ -153,6 +153,41 @@ Simulation *Simulation_create(ParsedFile *pf) {
     return s;
 }
 
+void makeRandomRequest()
+{
+
+    ParsedFile *pf = simulation->pf;
+    float timeUntilNextRequest = exponentialRand((float) (60*pf->requestRate));
+    int executionTime = (int) timeUntilNextRequest + simulation->currentTime;
+    printf("making a random request at %d for %d", simulation->currentTime, executionTime);
+    makeRequest(executionTime);
+}
+
+int makeRequestCallback(void *data) {
+    // Make a new (random) request
+    Passenger* passenger = Passenger_create();
+    Request* request = Passenger_make_request(simulation);
+    passenger->request = request;
+    formatTime(simulation->currentTime);
+    Request_print(request);
+
+    // Now we need to do something with this request...
+    // This will calculate the SHORTEST time (in minutes) for a bus to get here...
+    findBus(simulation, simulation->minibuses, passenger);
+    //Passenger_destroy(passenger);
+
+    // We only want to create a request with the request rate...
+    printf("make request callback\n");
+    makeRandomRequest();
+}
+
+void makeRequest(int executionTime)
+{
+    Event *event = createEvent(executionTime, makeRequestCallback, NULL);
+    addToEventQueue(*event, simulation);
+}
+
+
 Statistics* Simulation_start(Simulation *simulation)
 {
     statistics = Statistics_create();
@@ -161,36 +196,14 @@ Statistics* Simulation_start(Simulation *simulation)
 
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
     Minibus * minibuses = createMinibuses(pf);
+    simulation->minibuses = minibuses;
 
-    // Print our minibuses
-    Minibus_print(&minibuses[4]);
-    Minibus_print(&minibuses[3]);
-    Minibus_print(&minibuses[2]);
-    Minibus_print(&minibuses[1]);
-    Minibus_print(&minibuses[0]);
+    // Start with one request
+    makeRandomRequest();
 
     // Our simulation algorithm, boom
     for (int currentTime = 0; currentTime <= pf->stopTime; currentTime++)
     {
-        // Convert request rate in seconds
-        int requestRate = (int) pf->requestRate;
-
-        // We only want to create a request with the request rate...
-        if (currentTime % requestRate == 0)
-        {
-            // Make a new (random) request
-            Passenger* passenger = Passenger_create();
-            Request* request = Passenger_make_request(simulation);
-            passenger->request = request;
-            formatTime(simulation->currentTime);
-            Request_print(request);
-
-            // Now we need to do something with this request...
-            // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-            findBus(simulation, minibuses, passenger);
-            //Passenger_destroy(passenger);
-        }
-
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
         executeEvents(simulation->currentTime);

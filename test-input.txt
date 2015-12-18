@@ -3,7 +3,7 @@ busCapacity 12
 # passenger boarding/disembarkation duration (in seconds)
 boardingTime 10
 # Average number of journey requests per hour
-requestRate 60.0
+requestRate 6.0
 # Average time between request and desired pick-up (in minutes)
 pickupInterval 3
 # Maximum time a user can wait beyond the desired pick-up time (in minutes)

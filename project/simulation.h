@@ -13,6 +13,7 @@
 typedef struct Simulation {
     ParsedFile *pf;
     int currentTime;
+    Minibus * minibuses;
 } Simulation;
 
 
@@ -20,5 +21,9 @@ typedef struct Simulation {
 Simulation *Simulation_create(ParsedFile *pf);
 Statistics* Simulation_start(Simulation *simulation);
 Minibus * createMinibuses(ParsedFile *pf);
+
+void makeRandomRequest();
+void makeRequest(int time);
+int makeRequestCallback(void *data);
 
 #endif //CSLP_SIMULATION_H
