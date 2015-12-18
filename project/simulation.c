@@ -209,7 +209,8 @@ Statistics* Simulation_start(Simulation *simulation)
     {
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        executeEvents(currentTime);
+        executeEvents(simulation->currentTime);
+
         simulation->currentTime = currentTime;
     }
 

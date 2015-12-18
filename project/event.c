@@ -62,6 +62,11 @@ void executeEvents(int executionTime) {
 
 EventQueue* addToEventQueue(Event event, Simulation *simulation)
 {
+    if (event.executionTime == simulation->currentTime)
+    {
+        event.executionTime = event.executionTime+1;
+    }
+    printf("added to event queue for execution at %d\n", event.executionTime);
     if(NULL == head)
     {
         return (create(event));
