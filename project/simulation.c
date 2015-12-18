@@ -66,8 +66,6 @@ int busArrived(void *data) {
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
-
-    stopsForMinibus(request->minibus);
     return 5;
 }
 
@@ -78,7 +76,7 @@ EventQueue *eventQueue = NULL;
 int isReroutingPossible(Minibus *minibus, Request *request)
 {
     // Gets all future events for minibus
-    stopsForMinibus(request->minibus);
+    //stopsForMinibus(request->minibus);
 
     // Make an array of bus requests
     int noRequests = 5;
@@ -175,6 +173,8 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         // we wanna mark this bus as busy
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
+
+        stopsForMinibus(request->minibus, simulation);
 
 //        printEventQueues();
     }

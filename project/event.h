@@ -7,6 +7,7 @@
 
 #include <stdbool.h>
 #include "simulation.h"
+#include "request.h"
 
 typedef struct Event {
     int executionTime; // the time at which this event occurs
@@ -27,6 +28,6 @@ EventQueue* betterSearch(int executionTime, Simulation *simulation);
 int deleteFromEventQueue(Event event);
 extern void formatTime(int seconds);
 void executeEvents(int executionTime);
-void stopsForMinibus(Minibus *minibus);
+Request *requests stopsForMinibus(Minibus *minibus, Simulation *simulation);
 
 #endif //CSLP_EVENT_H
