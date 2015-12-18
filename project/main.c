@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
     Simulation *simulations = parseFile(file);
 
     // Loop through the simulations, and run them
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 25; i++)
     {
         if ( &simulations[i])
         {

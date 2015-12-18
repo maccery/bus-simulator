@@ -77,6 +77,8 @@ void printParsedFile(ParsedFile *parsedFile)
 Simulation *parseFile(FILE *file)
 {
     int noBuses[5];
+    int maxDelay[5];
+
     char line[256];
 
     if (file == NULL) {
@@ -114,7 +116,19 @@ Simulation *parseFile(FILE *file)
                 parsedFile->pickupInterval = atoi(value) * 60; // time is given in minutes
             }
             else if (strcmp(variableName, "maxDelay") == 0) {
-                parsedFile->maxDelay = atoi(value) * 60; // time is given in minutes
+                if (strcmp(value,"experiment") == 0)
+                {
+                    // Loop through the next tokens until we're at the end of the line
+                    int i = 0;
+                    for (char *p = strtok(NULL," "); p != NULL; p = strtok(NULL, " ")) {
+                        maxDelay[i] = atoi(p) * 60; // time is given in minutes, we want seconds
+                        i++;
+                    }
+                }
+                else
+                {
+                    maxDelay[0] = atoi(value) * 60;
+                }
             }
             else if (strcmp(variableName, "noBuses") == 0) {
                 // If the value is experiment, we know the next few numbers are gonna be experiment values (up to 5)
@@ -189,21 +203,32 @@ Simulation *parseFile(FILE *file)
     fclose(file);
 
     // Create an array of pointers to the simulators that we've created
-    int numberOfSimulations = 5;
+    int numberOfSimulations = 25;
     Simulation *simulations = malloc(numberOfSimulations * sizeof(Simulation*));
 
     // Make simulators for every combination of noBuses
+    int k = 0;
     for (int i = 0; i < 5; i++)
     {
         if (noBuses[i])
         {
-            // Make a copy of the parsed file, but update it with our no buses parameters
-            ParsedFile *parsedFileCopy = malloc(sizeof(ParsedFile));
-            *parsedFileCopy = *parsedFile;
-            parsedFileCopy->noBuses = noBuses[i];
-            simulations[i] = *Simulation_create(parsedFileCopy);
+            // Make simulators for every combination of max Delay
+            for (int j = 0; j < 5; j++)
+            {
+                if (maxDelay[j])
+                {
+                    // Make a copy of the parsed file, but update it with our no buses parameters
+                    ParsedFile *parsedFileCopy = malloc(sizeof(ParsedFile));
+                    *parsedFileCopy = *parsedFile;
+                    parsedFileCopy->noBuses = noBuses[j];
+                    parsedFileCopy->maxDelay = maxDelay[j];
+                    simulations[j] = *Simulation_create(parsedFileCopy);
+                    k = k+1;
+                }
+            }
         }
     }
 
     return simulations;
 }
+
