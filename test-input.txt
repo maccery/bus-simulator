@@ -5,7 +5,7 @@ boardingTime 10
 # Average number of journey requests per hour
 requestRate 6.0
 # Average time between request and desired pick-up (in minutes)
-pickupInterval 30
+pickupInterval 5
 # Maximum time a user can wait beyond the desired pick-up time (in minutes)
 maxDelay 15
 # Number of minibuses

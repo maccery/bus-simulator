@@ -30,7 +30,6 @@ Request* Passenger_make_request(Simulation *simulation) {
 
 void Passenger_disembark(Request *request, Minibus *minibus) {
     minibus->occupancy = minibus->occupancy-1;
-    printf("updating the current stop to %d\n", request->destinationStop);
     minibus->currentStop = request->destinationStop;
     //passenger->currentBus = NULL;
     printf("-> Minibus %d disembaraked passenger at stop %d. ", minibus->id, request->destinationStop);
@@ -39,7 +38,6 @@ void Passenger_disembark(Request *request, Minibus *minibus) {
 
 void Passenger_embark(Request *request, Minibus *minibus) {
     minibus->currentStop = request->startStop;
-    printf("updating the current stop to %d\n", request->startStop);
     //minibus->occupancy = minibus->occupancy+1;
     printf("-> Minibus %d added passenger at stop %d. ", minibus->id, request->startStop);
     printf("-> Minibus %d occupancy changed to %d\n", minibus->id, minibus->occupancy);

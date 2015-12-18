@@ -31,7 +31,6 @@ int boardedPassenger(void *data) {
     // We now need to remove this event from the queue and pick up more folk
     int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
     int destinationTime = travelTime + simulation->currentTime;
-    formatTime(simulation->currentTime);
 
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
     addToEventQueue(*event, simulation);
@@ -178,7 +177,6 @@ int makeRequestCallback(void *data) {
     Passenger* passenger = Passenger_create();
     Request* request = Passenger_make_request(simulation);
     passenger->request = request;
-    formatTime(simulation->currentTime);
     Request_print(request);
 
     // Now we need to do something with this request...
