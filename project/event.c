@@ -19,6 +19,7 @@ void formatTime(int seconds)
 Event *createEvent(int executionTime, int (*callbackFunction)(void*), void* data)
 {
     Event *event = malloc(sizeof(Event));
+    assert(event != NULL);
     event->executionTime = executionTime;
     event->callbackFunction = callbackFunction;
     event->data = data;

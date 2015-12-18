@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
         printf("\n");
     }
 
+    runSimulator(&simulations[0]);
+
 
     //ParsedFile_destroy(pf);
 

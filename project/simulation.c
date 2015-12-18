@@ -5,11 +5,11 @@
 #include <stdbool.h>
 #include <unistd.h>
 #include "simulation.h"
-#include "dijkstra.h"
+#include "flloyd.h"
 #include "event.h"
 #include "passenger.h"
 
-Simulation *simulation;
+Simulation *globalSimulation;
 Statistics *statistics;
 
 int busArrivedAtDestination(void *data) {
@@ -29,11 +29,11 @@ int boardedPassenger(void *data) {
     Passenger_embark(request, request->minibus);
 
     // We now need to remove this event from the queue and pick up more folk
-    int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
-    int destinationTime = travelTime + simulation->currentTime;
+    int travelTime = makeDis(globalSimulation->pf->map, globalSimulation->pf->edgeCount, request->startStop, request->destinationStop);
+    int destinationTime = travelTime + globalSimulation->currentTime;
 
     Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
-    addToEventQueue(*event, simulation);
+    addToEventQueue(*event, globalSimulation);
 
     // Update statistics
     statistics->totalTrips = statistics->totalTrips + 1;
@@ -48,12 +48,12 @@ int busArrived(void *data) {
     Request *request = (Request*) data;
 
     // It takes some time to board the passengers, make event for this
-    int executionTime = simulation->currentTime + simulation->pf->boardingTime;
+    int executionTime = globalSimulation->currentTime + globalSimulation->pf->boardingTime;
 
     // If we've arrived early, we can't depart yet
     if (request->desiredBoardingTime > executionTime)
     {
-        executionTime = request->desiredBoardingTime + simulation->pf->boardingTime;
+        executionTime = request->desiredBoardingTime + globalSimulation->pf->boardingTime;
     }
     // If we didn't arrive earlier, we need to record our waiting time
     else
@@ -62,10 +62,10 @@ int busArrived(void *data) {
         statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
     }
 
-    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
+    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", 0, request->startStop, request->desiredBoardingTime);
 
     Event *event = createEvent(executionTime, boardedPassenger, request);
-    addToEventQueue(*event, simulation);
+    addToEventQueue(*event, globalSimulation);
 
     return 5;
 }
@@ -80,19 +80,19 @@ EventQueue *eventQueue = NULL;
  * - disembarkation of a passenger
  * - boarding of a new passenger
  */
-void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
+void findBus(Simulation *sim, Minibus *minibuses, Passenger* passenger)
 {
     Request *request = passenger->request;
-    ParsedFile *pf = simulation->pf;
+    ParsedFile *pf = globalSimulation->pf;
 
     // Really large shortest journey time to start with
     int shortestJourneyTime = 50000000;
     Minibus* quickestBus = NULL;
 
-    formatTime(simulation->currentTime);
+    formatTime(globalSimulation->currentTime);
 
     // loop through minibuses to find the best one for our user
-    for (int i = 0; i <= pf->noBuses; i ++)
+    for (int i = 0; i < pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
@@ -100,12 +100,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         if (minibus->occupancy < 1)
         {
 
-            if (minibus->currentStop == 5)
-            {
-                minibus->currentStop = 4;
-            }
-            int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
-
+            int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
             // If it's not the shortest, ignore it
             if (journeyTime <= shortestJourneyTime)
             {
@@ -115,7 +110,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         }
     }
 
-    int executionTime = shortestJourneyTime + simulation->currentTime;
+    int executionTime = shortestJourneyTime + globalSimulation->currentTime;
 
     // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
     if (!quickestBus)
@@ -139,7 +134,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         request->minibus = quickestBus;
         // we wanna mark this bus as busy
         Event *event = createEvent(executionTime, busArrived, request);
-        addToEventQueue(*event, simulation);
+        addToEventQueue(*event, globalSimulation);
 //        printEventQueues();
     }
     statistics->totalRequests++;
@@ -154,7 +149,7 @@ Simulation *Simulation_create(ParsedFile *pf) {
 
     s->pf = pf;
 
-    simulation = s;
+    globalSimulation = s;
 
     return s;
 }
@@ -162,9 +157,9 @@ Simulation *Simulation_create(ParsedFile *pf) {
 void makeRandomRequest()
 {
 
-    ParsedFile *pf = simulation->pf;
+    ParsedFile *pf = globalSimulation->pf;
     float timeUntilNextRequest = exponentialRand((float) (60*pf->requestRate));
-    int executionTime = (int) timeUntilNextRequest + simulation->currentTime;
+    int executionTime = (int) timeUntilNextRequest + globalSimulation->currentTime;
 
     makeRequest(executionTime);
 }
@@ -175,19 +170,19 @@ int makeRequestCallback(void *data) {
 
     // Make a new (random) request
     Passenger* passenger = Passenger_create();
-    Request* request = Passenger_make_request(simulation);
+    Request* request = Passenger_make_request(globalSimulation);
     passenger->request = request;
     Request_print(request);
 
     // Now we need to do something with this request...
     // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-    findBus(simulation, simulation->minibuses, passenger);
+    findBus(globalSimulation, globalSimulation->minibuses, passenger);
 }
 
 void makeRequest(int executionTime)
 {
     Event *event = createEvent(executionTime, makeRequestCallback, NULL);
-    addToEventQueue(*event, simulation);
+    addToEventQueue(*event, globalSimulation);
 }
 
 
@@ -198,8 +193,8 @@ Statistics* Simulation_start(Simulation *simulation)
     ParsedFile *pf = simulation->pf;
 
     // There's a fixed amount of minibuses in the system, let's make these first and store in array
-    Minibus * minibuses = createMinibuses(pf);
-    simulation->minibuses = minibuses;
+    simulation->minibuses = createMinibuses(pf);
+    globalSimulation = simulation;
 
     // Start with one request
     makeRandomRequest();
@@ -210,7 +205,6 @@ Statistics* Simulation_start(Simulation *simulation)
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
         executeEvents(simulation->currentTime);
-
         simulation->currentTime = currentTime;
     }
 
@@ -218,7 +212,7 @@ Statistics* Simulation_start(Simulation *simulation)
     return statistics;
 }
 
-Minibus * createMinibuses(ParsedFile *pf)
+Minibus *createMinibuses(ParsedFile *pf)
 {
     // Create an array of pointers to the minibuses that we've created
     Minibus *minibuses = malloc(pf->noBuses * sizeof(Minibus*));

@@ -35,12 +35,13 @@ typedef struct ParsedFile {
 
 typedef struct Simulation {
     ParsedFile *pf;
+    Minibus * minibuses;
     int currentTime;
 } Simulation;
 
 Simulation *Simulation_create(ParsedFile *pf);
 Statistics* Simulation_start(Simulation *simulation);
-Minibus * createMinibuses(ParsedFile *pf);
+Minibus *createMinibuses(ParsedFile *pf);
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses, int noStops, int stopTime);

@@ -7,4 +7,8 @@
 
 
 
+void makeRandomRequest();
+void makeRequest(int time);
+int makeRequestCallback(void *data);
+
 #endif //CSLP_SIMULATION_H
