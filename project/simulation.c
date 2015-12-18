@@ -138,7 +138,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         int hey = isReroutingPossible(minibus, request);
         printf("Rerouting is possible: %d\n", hey);
 
-        if (minibus->occupancy < 1)
+        if (minibus->occupancy < 12 && isReroutingPossible(minibus, request) == 1)
         {
 
             if (minibus->currentStop == 5)
