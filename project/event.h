@@ -6,7 +6,7 @@
 #define CSLP_EVENT_H
 
 #include <stdbool.h>
-#include "simulation.h"
+#include "parser.h"
 
 typedef struct Event {
     int executionTime; // the time at which this event occurs

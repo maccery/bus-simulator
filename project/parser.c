@@ -5,6 +5,7 @@
 #include "parser.h"
 #include <assert.h>
 #include "dijkstra.h"
+#include "simulation.h"
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses[5], int noStops, int stopTime) {
@@ -73,7 +74,7 @@ void printParsedFile(ParsedFile *parsedFile)
  * Parses a given file
  * @return ParsedFile
  */
-ParsedFile * parseFile(FILE *file)
+Simulation *parseFile(FILE *file)
 {
     char line[256];
 
@@ -186,5 +187,13 @@ ParsedFile * parseFile(FILE *file)
     }
     fclose(file);
 
-    return parsedFile;
+    // Create an array of pointers to the simulators that we've created
+    int numberOfSimulations = 5;
+    Simulation *simulations = malloc(numberOfSimulations * sizeof(Simulation*));
+    for (int total = 0; total < numberOfSimulations; total++)
+    {
+        simulations[total] = *Simulation_create(parsedFile);
+    }
+
+    return simulations;
 }
