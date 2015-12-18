@@ -80,9 +80,8 @@ EventQueue *eventQueue = NULL;
  * - disembarkation of a passenger
  * - boarding of a new passenger
  */
-void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
+void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
 {
-    Request *request = passenger->request;
     ParsedFile *pf = simulation->pf;
 
     // Really large shortest journey time to start with
@@ -174,14 +173,12 @@ int makeRequestCallback(void *data) {
     makeRandomRequest();
 
     // Make a new (random) request
-    Passenger* passenger = Passenger_create();
-    Request* request = Passenger_make_request(simulation);
-    passenger->request = request;
+    Request* request = Request_random(simulation);
     Request_print(request);
 
     // Now we need to do something with this request...
     // This will calculate the SHORTEST time (in minutes) for a bus to get here...
-    findBus(simulation, simulation->minibuses, passenger);
+    findBus(simulation, simulation->minibuses, request);
 }
 
 void makeRequest(int executionTime)

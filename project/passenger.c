@@ -4,30 +4,6 @@
 
 #include "passenger.h"
 
-Passenger *Passenger_create() {
-    // Allocate enough memory to create a new and check we have enough memory
-    Passenger *passenger = malloc(sizeof(Passenger));
-    assert(passenger != NULL);
-    return passenger;
-}
-
-void Passenger_print(Passenger *passenger) {
-    printf("\n");
-}
-
-void Passenger_destroy(Passenger *passenger) {
-    assert(passenger != NULL);
-    free(passenger);
-}
-
-Request* Passenger_make_request(Simulation *simulation) {
-    Request* request = Request_random(simulation);
-    //passenger->request = request;
-//    request->passenger = *passenger;
-
-    return request;
-}
-
 void Passenger_disembark(Request *request, Minibus *minibus) {
     minibus->occupancy = minibus->occupancy-1;
     minibus->currentStop = request->destinationStop;

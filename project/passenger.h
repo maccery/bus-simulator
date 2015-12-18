@@ -14,9 +14,6 @@ typedef struct Passenger {
     Request *request;
 } Passenger;
 
-Passenger *Passenger_create();
-Request* Passenger_make_request(Simulation *simulation);
-void Passenger_destroy(Passenger *passenger);
 void Passenger_disembark(Request *request, Minibus *minibus);
 void Passenger_embark(Request *request, Minibus *minibus);
 
