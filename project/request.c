@@ -5,6 +5,7 @@
 #include "request.h"
 #include "simulation.h"
 #include "event.h"
+#include <math.h>
 
 unsigned int rand_interval(unsigned int min, unsigned int max)
 {
@@ -57,6 +58,20 @@ void Request_print(Request *request) {
 
 }
 
+
+/*
+ * Given a mean of an exponential distribtuion, returns a random value
+ */
+int exponentialRand(float mean) {
+    double random = rand_interval(0, 100);
+    double randomDigit = random/100;
+    printf("random mean: %f, digit: %f\n", mean, randomDigit);
+
+    int randomNumber = (int) -mean*log(randomDigit);
+
+    return randomNumber;
+}
+
 /**
  * Generates a random request
  * @param numberOfBusStops
@@ -78,7 +93,7 @@ Request* Request_random(Simulation *simulation) {
     }
 
     // Generates a random boarding time
-    int pickupInterval = rand_interval(0, (unsigned int) pf->pickupInterval);
+    int pickupInterval = exponentialRand(pf->pickupInterval);
     int desiredBoardingTime = simulation->currentTime + pickupInterval;
 
     return Request_create(startStop, destinationStop, desiredBoardingTime);

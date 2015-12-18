@@ -123,7 +123,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
     }
     else
     {
-        printf("-> minibus %d is scheduled to arrive there at ", quickestBus->id);
+        printf("-> minibus %d is scheduled to arrive there (shortest journey: %d) at ",  quickestBus->id, shortestJourneyTime);
         formatTime(executionTime);
         printf("\n");
 
