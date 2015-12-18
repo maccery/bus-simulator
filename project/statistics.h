@@ -2,6 +2,9 @@
 // Created by Tom Macmichael on 17/12/2015.
 //
 
+#ifndef CSLP_STATISTICS_H
+#define CSLP_STATISTICS_H
+
 #include <stdio.h>
 
 typedef struct Statistics {
@@ -23,3 +26,5 @@ void printStatistics(Statistics *statistics);
 
 extern int exponentialRand(float mean);
 int rand_interval(int min_n, int max_n);
+
+#endif

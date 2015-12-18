@@ -20,6 +20,10 @@ Statistics *Statistics_create(int tripTotalLength, int totalTrips, int totalMiss
 }
 
 int averageDuration(Statistics *statistics) {
+    if (statistics->totalTrips == 0)
+    {
+        statistics->totalTrips = 1;
+    }
     return statistics->tripTotalLength / statistics->totalTrips;
 }
 
