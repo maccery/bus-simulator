@@ -7,7 +7,7 @@ requestRate 60.0
 # Average time between request and desired pick-up (in minutes)
 pickupInterval 30.0
 # Maximum time a user can wait beyond the desired pick-up time (in minutes)
-maxDelay experiment 10 15
+maxDelay experiment 10 10
 # Number of minibuses
 noBuses experiment 10 8
 # Number of bus stops

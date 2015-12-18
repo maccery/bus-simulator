@@ -76,8 +76,8 @@ void printParsedFile(ParsedFile *parsedFile)
  */
 Simulation *parseFile(FILE *file)
 {
-    int noBuses[5];
-    int maxDelay[5];
+    int noBuses[2];
+    int maxDelay[2];
 
     char line[256];
 
@@ -124,6 +124,7 @@ Simulation *parseFile(FILE *file)
                         maxDelay[i] = atoi(p) * 60; // time is given in minutes, we want seconds
                         i++;
                     }
+
                 }
                 else
                 {
@@ -203,26 +204,28 @@ Simulation *parseFile(FILE *file)
     fclose(file);
 
     // Create an array of pointers to the simulators that we've created
-    int numberOfSimulations = 25;
+    int numberOfSimulations = 4;
     Simulation *simulations = malloc(numberOfSimulations * sizeof(Simulation*));
 
     // Make simulators for every combination of noBuses
     int k = 0;
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 2; i++)
     {
         if (noBuses[i])
         {
             // Make simulators for every combination of max Delay
-            for (int j = 0; j < 5; j++)
+            for (int j = 0; j < 2; j++)
             {
                 if (maxDelay[j])
                 {
+                    printf("max delay isn't blank", maxDelay);
                     // Make a copy of the parsed file, but update it with our no buses parameters
                     ParsedFile *parsedFileCopy = malloc(sizeof(ParsedFile));
                     *parsedFileCopy = *parsedFile;
-                    parsedFileCopy->noBuses = noBuses[j];
-                    parsedFileCopy->maxDelay = maxDelay[j];
-                    simulations[j] = *Simulation_create(parsedFileCopy);
+                    parsedFileCopy->noBuses = noBuses[i];
+                    parsedFileCopy->maxDelay = 600;
+                    printf("i: %d, j: %d, noBuses: %d, maxDelay: %d\n", i, j, noBuses[i], maxDelay[j]);
+                    simulations[k] = *Simulation_create(parsedFileCopy);
                     k = k+1;
                 }
             }
