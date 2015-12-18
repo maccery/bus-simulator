@@ -98,7 +98,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         if (minibus->occupancy < 1)
         {
             int journeyTime = makeDis(pf->map, pf->edgeCount, minibus->currentStop, request->startStop);
-
+            printf("minibus current stop: %d, request start stop: %d. JOURNEY TIME: %d\n", journeyTime, minibus->currentStop, request->startStop);
             // If it's not the shortest, ignore it
             if (journeyTime <= shortestJourneyTime)
             {
@@ -116,10 +116,10 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         statistics->totalMissed++;
         printf("Request cannot be accommodated. All minibuses are at maximum capacity\n");
     }
-    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay))
+    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay) || shortestJourneyTime < 0)
     {
         statistics->totalMissed++;
-        printf("Request cannot be accommodated. No bus will get there in desired time.\n");
+        printf("Request cannot be accommodated. No bus will get there in desired time. shortest journey: %d\n", shortestJourneyTime);
     }
     else
     {
@@ -131,7 +131,6 @@ void findBus(Simulation *simulation, Minibus * minibuses, Passenger* passenger)
         quickestBus->occupancy++;
         request->minibus = quickestBus;
         // we wanna mark this bus as busy
-        Minibus_print(request->minibus);
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
 //        printEventQueues();
@@ -159,7 +158,7 @@ void makeRandomRequest()
     ParsedFile *pf = simulation->pf;
     float timeUntilNextRequest = exponentialRand((float) (60*pf->requestRate));
     int executionTime = (int) timeUntilNextRequest + simulation->currentTime;
-    printf("making a random request at %d for %d", simulation->currentTime, executionTime);
+
     makeRequest(executionTime);
 }
 
@@ -174,10 +173,7 @@ int makeRequestCallback(void *data) {
     // Now we need to do something with this request...
     // This will calculate the SHORTEST time (in minutes) for a bus to get here...
     findBus(simulation, simulation->minibuses, passenger);
-    //Passenger_destroy(passenger);
 
-    // We only want to create a request with the request rate...
-    printf("make request callback\n");
     makeRandomRequest();
 }
 
@@ -206,7 +202,7 @@ Statistics* Simulation_start(Simulation *simulation)
     {
         // At this time t, are there any events?
         // If yes, we need to execute their callback function
-        executeEvents(simulation->currentTime);
+        executeEvents(currentTime);
         simulation->currentTime = currentTime;
     }
 

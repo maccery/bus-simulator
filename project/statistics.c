@@ -72,7 +72,6 @@ int rand_interval(int min_n, int max_n)
  * Given a mean of an exponential distribtuion, returns a random value
  */
 int exponentialRand(float mean) {
-    printf("mean = %f\n", mean);
     int random = rand_interval(0, 100);
     double randomDigit = (double) random/100;
     double randomNumber = -mean*log(randomDigit);

@@ -50,7 +50,7 @@ Request* Request_random(Simulation *simulation) {
 
 
     // Generates a number between 0 and the largest bus stop number (numberOfBusStops)
-    unsigned int max = (unsigned int) pf->noStops-1;
+    int max = pf->noStops-1;
 
     int startStop = 0;
     int destinationStop = 0;
@@ -59,7 +59,6 @@ Request* Request_random(Simulation *simulation) {
         startStop = rand_interval(0, max);
         destinationStop = rand_interval(0, max);
     }
-
     // Generates a random boarding time
     int pickupInterval = exponentialRand(pf->pickupInterval);
     int desiredBoardingTime = simulation->currentTime + pickupInterval;
