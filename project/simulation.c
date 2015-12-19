@@ -72,48 +72,77 @@ int busArrived(void *data) {
 // Global eventqueue
 EventQueue *eventQueue = NULL;
 
+
+int route(int startStop, int endStop, int time, int boardingTime)
+{
+    int shortestPath =  makeDis(simulation->pf->map, simulation->pf->edgeCount, startStop, startStop);
+    int endTime = time + shortestPath;
+    if (endTime <= boardingTime)
+    {
+        return endTime;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+int recurse(Request * r, Minibus *startingMinibus)
+{
+    int fail = 0;
+    int arraySize = 10;
+    for (int i = 0; i <= arraySize; i++)
+    {
+        int time = simulation->currentTime;
+        time = route(startingMinibus->currentStop, r[i].startStop, time, r[i].desiredBoardingTime);
+
+        Request *previous = &r[i];
+
+        if (previous->startStop == previous->destinationStop) break;
+
+        printf("i: %i, Going from minibus current location %d -> %d; time is gonna be %d\n", i, startingMinibus->currentStop, r[i].startStop, time);
+
+        for (int j = 0; j <= arraySize; j++)
+        {
+            if (r[j].startStop == r[j].destinationStop) break;
+
+            time = route(previous->startStop, r[j].startStop, time, r[j].desiredBoardingTime);
+            printf("j: %d, Going from %d -> %d; time is gonna be %d\n", j, previous->startStop, r[j].startStop, time);
+            previous = &r[j];
+
+            if (time == -1)
+            {
+                fail = 1;
+            }
+        }
+    }
+
+    if (!fail)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 /* Can minibus take in new request */
 int isReroutingPossible(Minibus *minibus, Request *request)
 {
-    // Gets all future events for minibus
-    //stopsForMinibus(request->minibus);
 
-    // Make an array of bus requests
-    int noRequests = 2;
-    Request * r = stopsForMinibus(minibus, simulation);
-    //requests[0] = *request;
+    printf("is re-routing possible for minibus %d?\n", minibus->id);
+    // Get all the stops that this minibus is current scheduled to stop at
+    // with our new request appended
+    Request * r = stopsForMinibus(minibus, simulation, request);
 
-    // What are our nodes to visit?
-    int possible = 1;
-    for (int i = 0; i < noRequests; i++)
+    int reRoutingPossible = recurse(r, minibus);
+    if (reRoutingPossible == 1)
     {
-
-        int currentTime = simulation->currentTime;
-        int shortestPossibleTime = 0;
-        for (int j = 0; j < noRequests; j++) {
-            //Request *r = &requests[j];
-            if (r[j].desiredBoardingTime > 5) {
-
-                int shortestPath = makeDis(simulation->pf->map, simulation->pf->edgeCount, r[i].startStop, r[j].startStop);
-                int combinationTime = currentTime + shortestPath;
-
-                if (combinationTime >= (r->desiredBoardingTime + simulation->pf->maxDelay)) {
-                    possible = 0;
-                }
-
-                if (r[j].startStop == request->startStop)
-                {
-                    shortestPossibleTime = shortestPath;
-                }
-
-            }
-        }
-        if (possible == 1)
-        {
-            // It's possible, we just need to say when it'll get there for
-            return shortestPossibleTime;
-        }
+        printf("Yes. It's indeed possible for minibus %d to take in this request.\n", minibus->id);
+        return 1;
     }
+    printf("\n");
     return -1;
 }
 
@@ -135,14 +164,16 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
 
     formatTime(simulation->currentTime);
 
+    printf("FIND BUS FOR THIS REQUEST, loop through buses\n");
     // loop through minibuses to find the best one for our user
     for (int i = 0; i <= pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
-        if (minibus->occupancy < 12)
+        if (minibus->occupancy < pf->busCapacity)
         {
+
             // Can we possible route any buses here?
             int journeyTime = isReroutingPossible(minibus, request);
 
@@ -187,7 +218,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
         Event *event = createEvent(executionTime, busArrived, request);
         addToEventQueue(*event, simulation);
 
-        stopsForMinibus(request->minibus, simulation);
+        //stopsForMinibus(request->minibus, simulation);
 
 //        printEventQueues();
     }
