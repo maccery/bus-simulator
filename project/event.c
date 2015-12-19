@@ -74,29 +74,24 @@ Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *req
     EventQueue *tmp = head;
     while (tmp != NULL) {
         Request *request = (Request*) tmp->event.data;
-        if (request) {
-        if (request->minibus) {
-            if (request->minibus->id)
-            {
+        if (!request->minibus) break; if (!request->minibus->id) break;
             if (request->minibus->id == minibus->id) {
-                //if(tmp->event.callbackFunction == busArrived)
+            //if(tmp->event.callbackFunction == busArrived)
+                if (tmp->event.executionTime >= simulation->currentTime)
                 {
-                    if (tmp->event.executionTime >= simulation->currentTime)
-                    {
-                        requests[i] = *(Request*) tmp->event.data;
-                        i++;
-                       // printf("Minibus %d has an upcoming stop %d, desired boarding time %d\n", minibus->id, request->startStop, request->desiredBoardingTime);
+                    requests[i] = *(Request*) tmp->event.data;
+                    i++;
+                    printf("Minibus %d has an upcoming stop %d, desired boarding time %d\n", minibus->id, request->startStop, request->desiredBoardingTime);
 
-                    }
                 }
-            }}
-        }}
+
+            }
 
         tmp = tmp->next;
     }
 
     for (int j = i; j <12; j++) {
-        requests[j] = *Request_create(0,0,0);
+        requests[j] = *Request_create(-1,-1,-1);
     }
     return requests;
 }

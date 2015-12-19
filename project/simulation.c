@@ -23,6 +23,28 @@ int busArrivedAtDestination(void *data) {
     return 1;
 }
 
+/*
+ * Disembarks any passengers from minibus' current stop
+ */
+void disembarkAllPassengers(Minibus *minibus) {
+
+    printf("checking disembark status. Minibus is at %d \n", minibus->currentStop);
+    Request *blankRequest = Request_create(-1,-1,-1);
+    Request * r = stopsForMinibus(minibus, simulation, blankRequest);
+    for (int i = 0; i <= 12; i++)
+    {
+        Request *request = &r[i];
+        if (request->destinationStop == -1) break;
+        printf ("request destination %d\n", request->destinationStop);
+
+        if (request->destinationStop == minibus->currentStop)
+        {
+            Passenger_disembark(request, request->minibus);
+        }
+        printf("line %d", i);
+    }
+}
+
 // Boarding pasenger callback
 int boardedPassenger(void *data) {
     Request *request = (Request*) data;
@@ -32,7 +54,7 @@ int boardedPassenger(void *data) {
     int travelTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, request->startStop, request->destinationStop);
     int destinationTime = travelTime + simulation->currentTime;
 
-    Event *event = createEvent(destinationTime, busArrivedAtDestination, request);
+    Event *event = createEvent(destinationTime, busArrived, request);
     addToEventQueue(*event, simulation);
 
     // Update statistics
@@ -44,8 +66,10 @@ int boardedPassenger(void *data) {
 
 // Handles the situation when bus arrived
 int busArrived(void *data) {
-
     Request *request = (Request*) data;
+
+    // Let's mark us arrived
+    request->minibus->currentStop = request->startStop;
 
     // It takes some time to board the passengers, make event for this
     int executionTime = simulation->currentTime + simulation->pf->boardingTime;
@@ -62,8 +86,12 @@ int busArrived(void *data) {
         statistics->totalWaitingTime = statistics->totalWaitingTime + waitingTime;
     }
 
-    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
 
+    printf("-> minibus %d arrived at stop %d. Waiting to depart at %d\n", request->minibus->id, request->startStop, request->desiredBoardingTime);
+    disembarkAllPassengers(request->minibus);
+
+
+    // Queue the event for when we board the passenger (i.e in ~10 seconds)
     Event *event = createEvent(executionTime, boardedPassenger, request);
     addToEventQueue(*event, simulation);
     return 5;
@@ -101,6 +129,7 @@ void makeEvents(Event * e)
     }
 }
 
+// Removes all future events for a minibus
 void removeEvents(Minibus *minibus)
 {
     removeFromEventQueue(minibus);

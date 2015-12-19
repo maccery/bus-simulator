@@ -25,6 +25,7 @@ typedef struct Request {
     int startStop;
     int destinationStop;
     int desiredBoardingTime;
+    int estimatedArrivalTime;
     Minibus *minibus;
 } Request;
 
