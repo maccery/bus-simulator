@@ -101,6 +101,11 @@ void makeEvents(Event * e)
     }
 }
 
+void removeEvents(Minibus *minibus)
+{
+    removeFromEventQueue(minibus);
+}
+
 
 int recurse(Request * r, Minibus *startingMinibus, int makeEvent)
 {
@@ -139,6 +144,7 @@ int recurse(Request * r, Minibus *startingMinibus, int makeEvent)
         {
             if (makeEvent == 1)
             {
+                removeEvents(startingMinibus);
                 makeEvents(events);
             }
             return 1;

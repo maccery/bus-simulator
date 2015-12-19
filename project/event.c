@@ -76,6 +76,8 @@ Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *req
         Request *request = (Request*) tmp->event.data;
         if (request) {
         if (request->minibus) {
+            if (request->minibus->id)
+            {
             if (request->minibus->id == minibus->id) {
                 //if(tmp->event.callbackFunction == busArrived)
                 {
@@ -87,7 +89,7 @@ Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *req
 
                     }
                 }
-            }
+            }}
         }}
 
         tmp = tmp->next;
@@ -97,6 +99,24 @@ Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *req
         requests[j] = *Request_create(0,0,0);
     }
     return requests;
+}
+
+void removeFromEventQueue(Minibus *minibus)
+{
+    EventQueue *tmp = head;
+    while (tmp != NULL) {
+        Request *request = (Request*) tmp->event.data;
+        if (request) {
+            if (request->minibus) {
+                if (request->minibus->id == minibus->id) {
+                    tmp->event.executionTime = 0;
+
+                }
+            }
+        }
+
+        tmp = tmp->next;
+    }
 }
 
 EventQueue* addToEventQueue(Event event, Simulation *simulation)

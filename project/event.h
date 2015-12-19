@@ -29,5 +29,6 @@ int deleteFromEventQueue(Event event);
 extern void formatTime(int seconds);
 void executeEvents(int executionTime);
 Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *request);
+void removeFromEventQueue(Minibus *minibus);
 
 #endif //CSLP_EVENT_H
