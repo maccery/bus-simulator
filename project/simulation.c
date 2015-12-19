@@ -87,10 +87,27 @@ int route(int startStop, int endStop, int time, int boardingTime)
     }
 }
 
+
+void makeEvents(Event * e)
+{
+    int arraySize = 10;
+    for (int i = 0; i <= arraySize; i++)
+    {
+        if (e[i].executionTime >= simulation->currentTime)
+        {
+            printf("Making an eventlol\n");
+            addToEventQueue(e[i], simulation);
+        }
+    }
+}
+
+
 int recurse(Request * r, Minibus *startingMinibus)
 {
     int fail = 0;
     int arraySize = 10;
+    Event *events = malloc(12 * sizeof(Event*));
+
     for (int i = 0; i <= arraySize; i++)
     {
         int time = simulation->currentTime;
@@ -114,17 +131,17 @@ int recurse(Request * r, Minibus *startingMinibus)
             {
                 fail = 1;
             }
+            events[j] = *createEvent(time, busArrived, &r[j]);
+
+        }
+        if (fail == 0)
+        {
+            makeEvents(events);
+            return 1;
         }
     }
 
-    if (!fail)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
+    return 0;
 }
 
 /* Can minibus take in new request */
@@ -177,6 +194,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
             // Can we possible route any buses here?
             int journeyTime = isReroutingPossible(minibus, request);
 
+
             if (minibus->currentStop == 5)
             {
                 minibus->currentStop = 4;
@@ -222,6 +240,7 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
 
 //        printEventQueues();
     }
+    
     statistics->totalRequests++;
 
     //Request_destroy(request);
