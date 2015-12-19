@@ -95,14 +95,14 @@ void makeEvents(Event * e)
     {
         if (e[i].executionTime >= simulation->currentTime)
         {
-            printf("Making an eventlol\n");
+            //printf("Making an eventlol\n");
             addToEventQueue(e[i], simulation);
         }
     }
 }
 
 
-int recurse(Request * r, Minibus *startingMinibus)
+int recurse(Request * r, Minibus *startingMinibus, int makeEvent)
 {
     int fail = 0;
     int arraySize = 10;
@@ -117,26 +117,30 @@ int recurse(Request * r, Minibus *startingMinibus)
 
         if (previous->startStop == previous->destinationStop) break;
 
-        printf("i: %i, Going from minibus current location %d -> %d; time is gonna be %d\n", i, startingMinibus->currentStop, r[i].startStop, time);
+        //printf("i: %i, Going from minibus current location %d -> %d; time is gonna be %d\n", i, startingMinibus->currentStop, r[i].startStop, time);
 
         for (int j = 0; j <= arraySize; j++)
         {
             if (r[j].startStop == r[j].destinationStop) break;
 
             time = route(previous->startStop, r[j].startStop, time, r[j].desiredBoardingTime);
-            printf("j: %d, Going from %d -> %d; time is gonna be %d\n", j, previous->startStop, r[j].startStop, time);
+            //printf("j: %d, Going from %d -> %d; time is gonna be %d\n", j, previous->startStop, r[j].startStop, time);
             previous = &r[j];
 
             if (time == -1)
             {
                 fail = 1;
             }
+            r[j].minibus = startingMinibus;
             events[j] = *createEvent(time, busArrived, &r[j]);
 
         }
         if (fail == 0)
         {
-            makeEvents(events);
+            if (makeEvent == 1)
+            {
+                makeEvents(events);
+            }
             return 1;
         }
     }
@@ -145,21 +149,21 @@ int recurse(Request * r, Minibus *startingMinibus)
 }
 
 /* Can minibus take in new request */
-int isReroutingPossible(Minibus *minibus, Request *request)
+int isReroutingPossible(Minibus *minibus, Request *request, int makeEvents)
 {
 
-    printf("is re-routing possible for minibus %d?\n", minibus->id);
+    //printf("is re-routing possible for minibus %d?\n", minibus->id);
     // Get all the stops that this minibus is current scheduled to stop at
     // with our new request appended
     Request * r = stopsForMinibus(minibus, simulation, request);
 
-    int reRoutingPossible = recurse(r, minibus);
+    int reRoutingPossible = recurse(r, minibus, makeEvents);
     if (reRoutingPossible == 1)
     {
-        printf("Yes. It's indeed possible for minibus %d to take in this request.\n", minibus->id);
+       // printf("Yes. It's indeed possible for minibus %d to take in this request.\n", minibus->id);
         return 1;
     }
-    printf("\n");
+    //printf("\n");
     return -1;
 }
 
@@ -181,66 +185,37 @@ void findBus(Simulation *simulation, Minibus * minibuses, Request* request)
 
     formatTime(simulation->currentTime);
 
-    printf("FIND BUS FOR THIS REQUEST, loop through buses\n");
+    //printf("FIND BUS FOR THIS REQUEST, loop through buses\n");
     // loop through minibuses to find the best one for our user
+    Minibus *chosenBus;
     for (int i = 0; i <= pf->noBuses; i ++)
     {
         // Calculate the time for this minibus to get to that person
         Minibus* minibus = &minibuses[i];
 
-        if (minibus->occupancy < pf->busCapacity)
-        {
+        if (minibus->occupancy < pf->busCapacity) {
 
             // Can we possible route any buses here?
-            int journeyTime = isReroutingPossible(minibus, request);
-
-
-            if (minibus->currentStop == 5)
+            if (isReroutingPossible(minibus, request, 0) == 1)
             {
-                minibus->currentStop = 4;
-            }
-            //int journeyTime = makeDis(simulation->pf->map, simulation->pf->edgeCount, minibus->currentStop, request->startStop);
-
-            // If it's not the shortest, ignore it
-            if (journeyTime <= shortestJourneyTime)
-            {
-                quickestBus = minibus;
-                shortestJourneyTime = journeyTime;
+             //   printf("WE'VE CHOSEN A BUS...IT'S %d\n", minibus->id);
+                 chosenBus = minibus;
             }
         }
-    }
 
-    int executionTime = shortestJourneyTime + simulation->currentTime;
-
-    // If it's gonna take too long to get there, or there's no buses available, we can't accommodate request
-    if (!quickestBus)
-    {
-        statistics->totalMissed++;
-        printf("Request cannot be accommodated. All minibuses are at maximum capacity\n");
+        //stopsForMinibus(request->minibus, simulation);
+//        printEventQueues();
     }
-    else if(executionTime >= (request->desiredBoardingTime + pf->maxDelay) || shortestJourneyTime < 0)
+   // printf("Loop over\n");
+    if (chosenBus)
     {
-        statistics->totalMissed++;
-        printf("Request cannot be accommodated. No bus will get there in desired time. shortest journey: %d\n", shortestJourneyTime);
+        isReroutingPossible(chosenBus, request, 1);
     }
     else
     {
-        printf("-> minibus %d is scheduled to arrive there (shortest journey: %d) at ",  quickestBus->id, shortestJourneyTime);
-        formatTime(executionTime);
-        printf("\n");
-
-        // We need to make a new event at the future time, with a callback function
-        request->minibus = quickestBus;
-
-        // we wanna mark this bus as busy
-        Event *event = createEvent(executionTime, busArrived, request);
-        addToEventQueue(*event, simulation);
-
-        //stopsForMinibus(request->minibus, simulation);
-
-//        printEventQueues();
+        printf("We can't do that request, sorry.\n");
     }
-    
+
     statistics->totalRequests++;
 
     //Request_destroy(request);
