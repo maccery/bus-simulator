@@ -77,7 +77,7 @@ int route(int startStop, int endStop, int time, int boardingTime)
 {
     int shortestPath =  makeDis(simulation->pf->map, simulation->pf->edgeCount, startStop, startStop);
     int endTime = time + shortestPath;
-    if (endTime <= boardingTime)
+    if (endTime <= (boardingTime + simulation->pf->maxDelay))
     {
         return endTime;
     }
