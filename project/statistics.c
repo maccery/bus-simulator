@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include "statistics.h"
+#include "math.h"
 
 Statistics *Statistics_create(int tripTotalLength, int totalTrips, int totalMissed, int totalWaitingTime, int  totalrequests) {
     Statistics *statistics = malloc(sizeof(Statistics));

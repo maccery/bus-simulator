@@ -4,7 +4,6 @@
 
 #include "parser.h"
 #include <assert.h>
-#include "dijkstra.h"
 
 ParsedFile *ParsedFile_create(int busCapacity, int boardingTime, float requestRate, float pickupInterval,
                                      int maxDelay, int noBuses, int noStops, int stopTime) {

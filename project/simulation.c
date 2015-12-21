@@ -7,7 +7,6 @@
 #include "simulation.h"
 #include "dijkstra.h"
 #include "event.h"
-#include "request.h"
 
 Simulation *simulation;
 Statistics *statistics;

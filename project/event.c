@@ -3,8 +3,6 @@
 //
 
 #include "event.h"
-#include "request.h"
-#include "simulation.h"
 
 void formatTime(int seconds)
 {
@@ -74,7 +72,7 @@ Request * stopsForMinibus(Minibus *minibus, Simulation *simulation, Request *req
     EventQueue *tmp = head;
     while (tmp != NULL) {
         Request *request = (Request*) tmp->event.data;
-        if (!request->minibus) break; if (!request->minibus->id) break;
+        if (request->minibus == NULL) break; if (request->minibus->id == NULL) break;
             if (request->minibus->id == minibus->id) {
             //if(tmp->event.callbackFunction == busArrived)
                 if (tmp->event.executionTime >= simulation->currentTime)

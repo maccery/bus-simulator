@@ -3,7 +3,6 @@
 //
 
 #include "request.h"
-#include "simulation.h"
 #include "event.h"
 
 /**
